@@ -3,9 +3,54 @@
 @section('title', '首页')
 
 @section('content')
-<div class="page-header">
-    <h1>管理后台</h1>
+<h1 style="font-size:20px;font-weight:600;margin-bottom:24px;">管理后台</h1>
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+        <div style="font-size:12px;color:#64748b;margin-bottom:4px;">企业总数</div>
+        <div style="font-size:24px;font-weight:700;color:#1e293b;">{{ $enterprisePending + $enterpriseApproved + $enterpriseRejected }}</div>
+        <div style="font-size:12px;margin-top:4px;">
+            <span style="color:#92400e;">待审 {{ $enterprisePending }}</span>
+            <span style="color:#065f46;margin-left:8px;">通过 {{ $enterpriseApproved }}</span>
+            <span style="color:#991b1b;margin-left:8px;">驳回 {{ $enterpriseRejected }}</span>
+        </div>
+    </div>
+    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+        <div style="font-size:12px;color:#64748b;margin-bottom:4px;">学生总数</div>
+        <div style="font-size:24px;font-weight:700;color:#1e293b;">{{ $studentCount }}</div>
+        <div style="font-size:12px;color:#64748b;margin-top:4px;">已注册学生</div>
+    </div>
+    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+        <div style="font-size:12px;color:#64748b;margin-bottom:4px;">岗位总数</div>
+        <div style="font-size:24px;font-weight:700;color:#1e293b;">{{ $jobActive + $jobInactive }}</div>
+        <div style="font-size:12px;margin-top:4px;">
+            <span style="color:#065f46;">上架 {{ $jobActive }}</span>
+            <span style="color:#64748b;margin-left:8px;">下架 {{ $jobInactive }}</span>
+        </div>
+    </div>
+    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+        <div style="font-size:12px;color:#64748b;margin-bottom:4px;">投递总数</div>
+        <div style="font-size:24px;font-weight:700;color:#1e293b;">{{ $applicationCount }}</div>
+        <div style="font-size:12px;color:#64748b;margin-top:4px;">岗位投递记录</div>
+    </div>
 </div>
-<p>欢迎回来，{{ auth()->user()->name }}。</p>
-<p style="margin-top:12px;color:#64748b;">使用左侧菜单管理企业审核。</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+        <h3 style="font-size:15px;font-weight:600;color:#1e293b;margin-bottom:12px;">用户统计</h3>
+        <div style="display:flex;gap:24px;">
+            <div><span style="font-size:20px;font-weight:600;color:#1e293b;">{{ $userCount }}</span><div style="font-size:12px;color:#64748b;">总用户</div></div>
+            <div><span style="font-size:20px;font-weight:600;color:#065f46;">{{ $activeUserCount }}</span><div style="font-size:12px;color:#64748b;">已激活</div></div>
+            <div><span style="font-size:20px;font-weight:600;color:#ef4444;">{{ $disabledUserCount }}</span><div style="font-size:12px;color:#64748b;">已禁用</div></div>
+        </div>
+    </div>
+    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
+        <h3 style="font-size:15px;font-weight:600;color:#1e293b;margin-bottom:12px;">快捷入口</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;">
+            <a href="{{ url('admin/enterprises?status=pending') }}" style="color:#3b82f6;text-decoration:none;">→ 待审核企业（{{ $enterprisePending }}）</a>
+            <a href="{{ url('admin/users?role=student') }}" style="color:#3b82f6;text-decoration:none;">→ 学生列表</a>
+            <a href="{{ url('admin/users?role=enterprise') }}" style="color:#3b82f6;text-decoration:none;">→ 企业用户列表</a>
+        </div>
+    </div>
+</div>
 @endsection

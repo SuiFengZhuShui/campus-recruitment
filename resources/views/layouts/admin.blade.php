@@ -35,7 +35,9 @@
             <ul class="sidebar-menu">
                 <li><a href="{{ url('admin') }}" class="{{ request()->is('admin') ? 'active' : '' }}">🏠 首页</a></li>
                 <li><a href="{{ url('admin/enterprises') }}" class="{{ request()->is('admin/enterprises*') ? 'active' : '' }}">🏢 企业审核</a></li>
-                <li><a href="{{ url('admin/colleges') }}" class="{{ request()->is('admin/colleges*') ? 'active' : '' }}">🏫 学院管理</a></li>
+                <li><a href="{{ url('admin/users') }}" class="{{ request()->is('admin/users*') ? 'active' : '' }}">👥 用户管理</a></li>
+                <li><a href="{{ url('admin/schools') }}" class="{{ request()->is('admin/schools*') ? 'active' : '' }}">🏫 学校管理</a></li>
+                <li><a href="{{ url('admin/colleges') }}" class="{{ request()->is('admin/colleges*') ? 'active' : '' }}">📚 学院管理</a></li>
                 <li><a href="{{ url('admin/rules') }}" class="{{ request()->is('admin/rules*') ? 'active' : '' }}">🔗 学号规则</a></li>
             </ul>
         </aside>

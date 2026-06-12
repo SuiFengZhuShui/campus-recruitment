@@ -14,9 +14,7 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
     Route::post('logout', 'AuthController@logout')->name('admin.logout');
 
     Route::middleware(['auth', 'role:school'])->group(function () {
-        Route::get('/', function () {
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
+        Route::get('/', 'DashboardController@index')->name('admin.dashboard');
         Route::get('enterprises', 'EnterpriseController@index')->name('admin.enterprises');
         Route::get('enterprises/{id}', 'EnterpriseController@show')->name('admin.enterprises.show');
         Route::post('enterprises/{id}/approve', 'EnterpriseController@approve')->name('admin.enterprises.approve');
@@ -33,5 +31,15 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
         Route::post('rules', 'StudentIdRuleController@store')->name('admin.rules.store');
         Route::put('rules/{id}', 'StudentIdRuleController@update')->name('admin.rules.update');
         Route::delete('rules/{id}', 'StudentIdRuleController@destroy')->name('admin.rules.destroy');
+
+        // Schools
+        Route::get('schools', 'SchoolController@index')->name('admin.schools');
+        Route::post('schools', 'SchoolController@store')->name('admin.schools.store');
+        Route::put('schools/{id}', 'SchoolController@update')->name('admin.schools.update');
+        Route::delete('schools/{id}', 'SchoolController@destroy')->name('admin.schools.destroy');
+
+        // Users
+        Route::get('users', 'UserController@index')->name('admin.users');
+        Route::post('users/{id}/toggle', 'UserController@toggle')->name('admin.users.toggle');
     });
 });
