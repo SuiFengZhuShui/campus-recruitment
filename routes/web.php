@@ -28,6 +28,9 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
         Route::get('enterprises/{id}', 'EnterpriseController@show')->name('admin.enterprises.show');
         Route::post('enterprises/{id}/approve', 'EnterpriseController@approve')->name('admin.enterprises.approve');
         Route::post('enterprises/{id}/reject', 'EnterpriseController@reject')->name('admin.enterprises.reject');
+        Route::post('enterprises/{id}/docs/{docId}/approve', 'EnterpriseController@approveDoc')->name('admin.enterprises.doc.approve');
+        Route::post('enterprises/{id}/docs/{docId}/reject', 'EnterpriseController@rejectDoc')->name('admin.enterprises.doc.reject');
+        Route::post('enterprises/{id}/docs/approve-all', 'EnterpriseController@approveAllDocs')->name('admin.enterprises.doc.approveAll');
 
         // Colleges
         Route::get('colleges', 'CollegeController@index')->name('admin.colleges');

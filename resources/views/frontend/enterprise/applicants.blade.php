@@ -35,7 +35,7 @@ async function load() {
                 </div>
                 <div style="margin-top:8px;font-size:14px;color:#64748b;">
                     手机：${a.student?.user?.phone || '-'} | 邮箱：${a.student?.user?.email || '-'}
-                    ${a.student?.resume_path ? `<a href="/api/my/resume" style="color:#3b82f6;margin-left:12px;">下载简历</a>` : '<span style="color:#94a3b8;margin-left:8px;">未上传简历</span>'}
+                    ${a.student?.resume_path ? `<a href="/api/resume/${a.student?.id}" style="color:#3b82f6;margin-left:12px;">下载简历</a>` : '<span style="color:#94a3b8;margin-left:8px;">未上传简历</span>'}
                 </div>
             </div>
         `).join('');

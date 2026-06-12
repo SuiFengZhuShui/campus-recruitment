@@ -68,8 +68,29 @@
                     @if ($doc->reject_reason)
                         <div style="font-size:13px;color:#ef4444;margin-top:4px;">不通过原因：{{ $doc->reject_reason }}</div>
                     @endif
+                    @if ($enterprise->status === 'pending' && $doc->status === 'pending')
+                    <div style="display:flex;gap:8px;margin-top:8px;">
+                        <form method="POST" action="{{ url('admin/enterprises/' . $enterprise->id . '/docs/' . $doc->id . '/approve') }}" style="display:inline;">
+                            @csrf
+                            <button type="submit" style="padding:4px 12px;background:#16a34a;color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer;">通过</button>
+                        </form>
+                        <form method="POST" action="{{ url('admin/enterprises/' . $enterprise->id . '/docs/' . $doc->id . '/reject') }}" style="display:inline;flex:1;">
+                            @csrf
+                            <div style="display:flex;gap:4px;">
+                                <input type="text" name="reject_reason" required placeholder="不通过原因" style="flex:1;padding:4px 8px;border:1px solid #fca5a5;border-radius:4px;font-size:12px;">
+                                <button type="submit" style="padding:4px 12px;background:#dc2626;color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer;white-space:nowrap;">驳回</button>
+                            </div>
+                        </form>
+                    </div>
+                    @endif
                 </div>
             @endforeach
+            @if ($enterprise->status === 'pending' && $enterprise->docs->where('status', 'pending')->count() > 1)
+            <form method="POST" action="{{ url('admin/enterprises/' . $enterprise->id . '/docs/approve-all') }}" style="margin-top:8px;">
+                @csrf
+                <button type="submit" style="padding:6px 16px;background:#16a34a;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;">全部通过</button>
+            </form>
+            @endif
         @endif
     </div>
 </div>

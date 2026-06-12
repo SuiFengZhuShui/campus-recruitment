@@ -89,14 +89,28 @@ class StudentController extends Controller
         ]);
     }
 
-    public function downloadResume()
+    public function downloadResume($studentId = null)
     {
         $user = auth()->user();
-        if (!$user || !$user->isStudent()) {
-            return response()->json(['code' => 401, 'message' => '请使用学生账号登录', 'data' => null], 401);
-        }
 
-        $student = Student::where('user_id', $user->id)->firstOrFail();
+        // Enterprise downloading a specific student's resume
+        if ($studentId && $user->isEnterprise()) {
+            $enterprise = \App\Models\Enterprise::where('user_id', $user->id)->firstOrFail();
+            // Verify the student applied to one of this enterprise's jobs
+            $hasApplied = \App\Models\Application::whereHas('job', function ($q) use ($enterprise) {
+                $q->where('enterprise_id', $enterprise->id);
+            })->where('student_id', $studentId)->exists();
+
+            if (!$hasApplied) {
+                return response()->json(['code' => 403, 'message' => '无权下载此简历', 'data' => null], 403);
+            }
+
+            $student = Student::findOrFail($studentId);
+        } elseif (!$studentId && $user->isStudent()) {
+            $student = Student::where('user_id', $user->id)->firstOrFail();
+        } else {
+            return response()->json(['code' => 401, 'message' => '无权访问', 'data' => null], 401);
+        }
 
         if (!$student->resume_path || !\Storage::exists($student->resume_path)) {
             return response()->json(['code' => 404, 'message' => '未上传简历', 'data' => null], 404);

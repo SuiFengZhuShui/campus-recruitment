@@ -14,7 +14,9 @@ class JobController extends Controller
 
     public function index(Request $request)
     {
-        $query = Job::with('enterprise:id,name,industry,scale')->where('status', 'active');
+        $query = Job::with('enterprise:id,name,industry,scale')
+            ->where('status', 'active')
+            ->where('created_at', '>=', now()->subDays(30));
 
         if ($request->keyword) {
             $query->where(function ($q) use ($request) {

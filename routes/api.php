@@ -26,6 +26,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::put('my/profile', [StudentController::class, 'updateProfile']);
         Route::post('my/resume', [StudentController::class, 'uploadResume']);
         Route::get('my/resume', [StudentController::class, 'downloadResume']);
+        Route::get('resume/{studentId}', [StudentController::class, 'downloadResume']);
     });
 
     // Applications — student
