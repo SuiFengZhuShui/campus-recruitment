@@ -35,6 +35,7 @@
 <script>
 async function doLogin(e) {
     e.preventDefault();
+    clearErrors();
     const fd = new FormData(e.target);
     try {
         const r = await fetch('/api/auth/login', { method:'POST', body:fd, headers:{'X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content} });
@@ -45,18 +46,41 @@ async function doLogin(e) {
             else if (role === 'student') location.href = '/';
             else location.href = '/';
         } else {
-            showFlash(d.message || '登录失败', 'error');
+            if (d.errors) showFieldErrors(d.errors);
+            else showFlash(d.message || '登录失败', 'error');
             document.getElementById('captchaImg').src = '/api/auth/captcha?' + Date.now();
         }
     } catch(err) {
         showFlash('网络错误', 'error');
     }
 }
+
 function showFlash(msg, type) {
     const el = document.getElementById('flash');
     el.style.display = 'block';
     el.className = 'flash flash-' + (type === 'error' ? 'error' : 'success');
     el.textContent = msg;
+}
+
+function showFieldErrors(errors) {
+    for (const [field, msgs] of Object.entries(errors)) {
+        const input = document.querySelector('[name="' + field + '"]');
+        if (input) {
+            input.style.borderColor = '#ef4444';
+            const err = document.createElement('div');
+            err.className = 'field-error';
+            err.style.cssText = 'color:#ef4444;font-size:12px;margin-top:2px;';
+            err.textContent = msgs.join(', ');
+            input.parentNode.appendChild(err);
+        } else {
+            showFlash(msgs.join(', '), 'error');
+        }
+    }
+}
+
+function clearErrors() {
+    document.querySelectorAll('.field-error').forEach(e => e.remove());
+    document.querySelectorAll('input[style*="border-color"]').forEach(e => e.style.borderColor = '#cbd5e1');
 }
 </script>
 @endsection

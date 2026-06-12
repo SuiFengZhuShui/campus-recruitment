@@ -48,7 +48,9 @@ const API = '/api/my/jobs';
 async function loadJobs() {
     try {
         const r = await fetch(API, {headers:{'Accept':'application/json'}});
+        if (r.status === 403) { location.href = '/enterprise/waiting'; return; }
         const d = await r.json();
+        if (d.code && d.code !== 200) { document.getElementById('jobList').innerHTML = '<div class="card" style="text-align:center;padding:60px;color:#ef4444;">'+(d.message||'加载失败')+'</div>'; return; }
         const list = (d.data && d.data.list) ? d.data.list : [];
         const c = document.getElementById('jobList');
         if (!list.length) {

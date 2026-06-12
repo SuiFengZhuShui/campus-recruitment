@@ -9,6 +9,7 @@ Route::get('/register', function () { return view('frontend.auth.register'); });
 Route::get('/jobs/{id}', function () { return view('frontend.jobs.show'); });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/enterprise/waiting', function () { return view('frontend.enterprise.waiting'); });
     Route::get('/enterprise/jobs', function () { return view('frontend.enterprise.jobs'); });
     Route::get('/enterprise/jobs/{id}/applications', function () { return view('frontend.enterprise.applicants'); });
     Route::get('/student/applications', function () { return view('frontend.student.applications'); });

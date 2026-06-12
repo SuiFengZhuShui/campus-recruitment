@@ -72,18 +72,21 @@ function switchRole(role) {
 
 async function doRegister(e, role) {
     e.preventDefault();
+    clearErrors();
     const fd = new FormData(e.target);
     const url = '/api/auth/register/' + role;
     try {
         const r = await fetch(url, { method:'POST', body:fd, headers:{'X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content} });
         const d = await r.json();
         if (d.code === 200) {
-            location.href = role === 'enterprise' ? '/enterprise/jobs' : '/';
+            location.href = role === 'enterprise' ? '/enterprise/waiting' : '/';
         } else {
-            const flash = document.getElementById('flash');
-            flash.style.display = 'block';
-            flash.className = 'flash flash-error';
-            flash.textContent = d.message || (d.errors ? Object.values(d.errors).flat().join(', ') : '注册失败');
+            if (d.errors) showFieldErrors(d.errors);
+            else {
+                document.getElementById('flash').style.display = 'block';
+                document.getElementById('flash').className = 'flash flash-error';
+                document.getElementById('flash').textContent = d.message || '注册失败';
+            }
             document.querySelectorAll('img[src*="captcha"]').forEach(img => img.src = '/api/auth/captcha?' + Date.now());
         }
     } catch(err) {
@@ -91,6 +94,29 @@ async function doRegister(e, role) {
         document.getElementById('flash').className = 'flash flash-error';
         document.getElementById('flash').textContent = '网络错误';
     }
+}
+
+function showFieldErrors(errors) {
+    for (const [field, msgs] of Object.entries(errors)) {
+        const input = document.querySelector('[name="' + field + '"]');
+        if (input) {
+            input.style.borderColor = '#ef4444';
+            const err = document.createElement('div');
+            err.className = 'field-error';
+            err.style.cssText = 'color:#ef4444;font-size:12px;margin-top:2px;';
+            err.textContent = msgs.join(', ');
+            input.parentNode.appendChild(err);
+        } else {
+            document.getElementById('flash').style.display = 'block';
+            document.getElementById('flash').className = 'flash flash-error';
+            document.getElementById('flash').textContent = msgs.join(', ');
+        }
+    }
+}
+
+function clearErrors() {
+    document.querySelectorAll('.field-error').forEach(e => e.remove());
+    document.querySelectorAll('input[style*="border-color"], select[style*="border-color"]').forEach(e => e.style.borderColor = '#cbd5e1');
 }
 </script>
 @endsection
