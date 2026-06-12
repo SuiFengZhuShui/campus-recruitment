@@ -17,6 +17,8 @@ class AuthController extends Controller
         $this->checkCaptcha($request);
 
         $data = $request->validate([
+            'username' => 'required|string|min:3|max:30|unique:users,username',
+            'email' => 'required|email|max:100|unique:users,email',
             'student_no' => 'required|string|max:30|unique:students,student_no',
             'class_name' => 'required|string|max:100',
             'name' => 'required|string|max:50',
@@ -26,6 +28,8 @@ class AuthController extends Controller
 
         $user = User::create([
             'role' => 'student',
+            'username' => $data['username'],
+            'email' => $data['email'],
             'name' => $data['name'],
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
@@ -58,6 +62,7 @@ class AuthController extends Controller
         $this->checkCaptcha($request);
 
         $data = $request->validate([
+            'username' => 'required|string|min:3|max:30|unique:users,username',
             'name' => 'required|string|max:200',
             'credit_code' => 'required|string|max:50|unique:enterprises,credit_code',
             'industry' => 'required|string|max:50',
@@ -65,20 +70,25 @@ class AuthController extends Controller
             'intro' => 'nullable|string',
             'contact_name' => 'required|string|max:30',
             'contact_phone' => 'required|string|max:20',
-            'email' => 'required|email|max:100',
+            'email' => 'required|email|max:100|unique:users,email',
             'phone' => 'required|string|max:20|unique:users,phone',
             'password' => 'required|string|min:6|max:50',
+            'doc_license' => 'required|file|mimes:png,jpg,jpeg,pdf|max:5120',
+            'doc_id_card' => 'required|file|mimes:png,jpg,jpeg,pdf|max:5120',
+            'doc_authorization' => 'required|file|mimes:png,jpg,jpeg,pdf|max:5120',
         ]);
 
         $user = User::create([
             'role' => 'enterprise',
+            'username' => $data['username'],
+            'email' => $data['email'],
             'name' => $data['contact_name'],
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
             'status' => 'active',
         ]);
 
-        Enterprise::create([
+        $enterprise = Enterprise::create([
             'user_id' => $user->id,
             'name' => $data['name'],
             'credit_code' => $data['credit_code'],
@@ -91,9 +101,32 @@ class AuthController extends Controller
             'status' => 'pending',
         ]);
 
+        // Save 3 qualification docs
+        $docTypes = [
+            'doc_license' => 'license',
+            'doc_id_card' => 'id_card',
+            'doc_authorization' => 'authorization',
+        ];
+        foreach ($docTypes as $field => $type) {
+            $file = $request->file($field);
+            $fileName = $file->getClientOriginalName();
+            $filePath = $file->storeAs(
+                'enterprise_docs/' . $enterprise->id,
+                uniqid() . '_' . preg_replace('/[^\w\.]/u', '_', $fileName)
+            );
+
+            \App\Models\EnterpriseDoc::create([
+                'enterprise_id' => $enterprise->id,
+                'type' => $type,
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+                'status' => 'pending',
+            ]);
+        }
+
         auth()->login($user);
 
-        return $this->respond($user, '注册成功，请上传企业资质等待审核');
+        return $this->respond($user, '注册成功，请等待管理员审核');
     }
 
     public function login(Request $request)
@@ -101,21 +134,25 @@ class AuthController extends Controller
         $this->checkCaptcha($request);
 
         $data = $request->validate([
-            'phone' => 'required|string',
+            'account' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $user = User::where('phone', $data['phone'])->first();
+        $account = $data['account'];
+        $user = User::where('phone', $account)
+            ->orWhere('username', $account)
+            ->orWhere('email', $account)
+            ->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'phone' => ['手机号或密码错误'],
+                'account' => ['账号或密码错误'],
             ]);
         }
 
         if ($user->status === 'disabled') {
             throw ValidationException::withMessages([
-                'phone' => ['账号已被禁用'],
+                'account' => ['账号已被禁用'],
             ]);
         }
 
@@ -143,8 +180,10 @@ class AuthController extends Controller
         $data = [
             'id' => $user->id,
             'role' => $user->role,
+            'username' => $user->username,
             'name' => $user->name,
             'phone' => $user->phone,
+            'email' => $user->email,
             'status' => $user->status,
         ];
 
@@ -179,7 +218,7 @@ class AuthController extends Controller
     {
         $rules = \App\Models\StudentIdRule::orderBy('prefix')->get();
         foreach ($rules as $rule) {
-            if (str_starts_with($studentNo, $rule->prefix)) {
+            if (strpos($studentNo, $rule->prefix) === 0) {
                 return $rule->college_id;
             }
         }
@@ -194,8 +233,10 @@ class AuthController extends Controller
             'data' => [
                 'id' => $user->id,
                 'role' => $user->role,
+                'username' => $user->username,
                 'name' => $user->name,
                 'phone' => $user->phone,
+                'email' => $user->email,
             ],
         ]);
     }
