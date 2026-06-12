@@ -1,0 +1,40 @@
+<h2>系统架构 — 前台 + 后台</h2>
+<p class="subtitle">五个板块，两套视觉风格</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px">
+
+<div style="background:#1a1a2e;border-radius:14px;padding:24px;border-top:3px solid #2ecc71">
+  <div style="font-size:18px;margin-bottom:8px">🌐 前台（面向学生）</div>
+  <div style="font-size:12px;color:#2ecc71;margin-bottom:16px">高校招聘门户 · 展示型</div>
+  <div style="font-size:13px;color:#ccc;line-height:2">
+    • 首页 — 平台介绍 / 统计数字 / 热门岗位<br>
+    • 岗位列表页 — 搜索/筛选/分页<br>
+    • 岗位详情页 — 企业信息 + 岗位详情 + 投递<br>
+    • 企业展示 — 已审核企业列表/详情<br>
+    • 学生注册/登录<br>
+    • 学生个人中心 — 简历管理 / 投递记录 / 消息
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:14px;padding:24px;border-top:3px solid #f39c12">
+  <div style="font-size:18px;margin-bottom:8px">🔧 后台（管理型）</div>
+  <div style="font-size:12px;color:#f39c12;margin-bottom:16px">三个独立管理面板</div>
+  <div style="font-size:13px;color:#ccc;line-height:2">
+    <b>🏫 学校后台</b><br>
+    学院CRUD / 企业审核 / 学生管理(筛选+搜索) / 学号规则 / 数据统计<br>
+    <b>🏛️ 学院后台</b><br>
+    本院企业 / 本院学生 / 数据统计 / 与学生沟通<br>
+    <b>🏢 企业后台</b><br>
+    审核进度(未审核) / 岗位管理 / 简历浏览下载 / 与学生沟通
+  </div>
+</div>
+
+</div>
+
+<div style="margin-top:24px;background:#0f3460;border-radius:12px;padding:20px;font-size:13px;color:#ccc;text-align:center;line-height:2">
+  <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap">
+    <div><b>路由</b><br><code>/</code> 前台门户<br><code>/jobs</code> 岗位列表<br><code>/student</code> 学生中心</div>
+    <div><b>路由</b><br><code>/enterprise</code> 企业后台<br><code>/admin/college</code> 学院后台<br><code>/admin/school</code> 学校后台</div>
+    <div><b>技术</b><br>前台：Vue 3 + Tailwind<br>后台：Vue 3 + Tailwind<br>API：Laravel 12</div>
+  </div>
+</div>

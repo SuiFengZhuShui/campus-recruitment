@@ -1,0 +1,42 @@
+<h2>权限矩阵</h2>
+<p class="subtitle">四个角色 × 系统功能 = 谁可以做什么</p>
+
+<div style="overflow-x:auto;margin-top:20px">
+<table style="width:100%;border-collapse:collapse;font-size:12px;text-align:center">
+<tr style="background:#0f3460">
+  <th style="padding:10px;text-align:left;color:#aaa">功能</th>
+  <th style="padding:10px;color:#e94560">🏫 学校</th>
+  <th style="padding:10px;color:#f39c12">🏛️ 学院</th>
+  <th style="padding:10px;color:#2ecc71">🏢 企业(已审)</th>
+  <th style="padding:10px;color:#e74c3c">🏢 企业(未审)</th>
+  <th style="padding:10px;color:#3498db">🎓 学生</th>
+  <th style="padding:10px;color:#888">👤 访客</th>
+</tr>
+
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">浏览岗位列表/详情</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#2ecc71">✅</td></tr>
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">浏览企业列表/详情</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td><td>✅</td><td style="color:#2ecc71">✅</td></tr>
+<tr style="border-bottom:1px solid #222;background:#111"><td style="padding:10px;text-align:left;color:#ccc">投递岗位</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222;background:#111"><td style="padding:10px;text-align:left;color:#ccc">上传/管理简历</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222;background:#111"><td style="padding:10px;text-align:left;color:#ccc">查看自己投递记录</td><td>—</td><td>—</td><td>—</td><td>—</td><td>✅</td><td>❌</td></tr>
+
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">上传资质</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">查看审核进度</td><td>—</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">发布/管理岗位</td><td>—</td><td>—</td><td style="color:#2ecc71">✅</td><td>❌</td><td>—</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">浏览/下载学生简历</td><td>—</td><td>—</td><td style="color:#2ecc71">✅</td><td>❌</td><td>—</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">查看投递本企业学生</td><td>—</td><td>—</td><td style="color:#2ecc71">✅</td><td>❌</td><td>—</td><td>❌</td></tr>
+
+<tr style="border-bottom:1px solid #222;background:#111"><td style="padding:10px;text-align:left;color:#ccc">审核企业</td><td style="color:#2ecc71">✅</td><td>❌</td><td>—</td><td>—</td><td>—</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222;background:#111"><td style="padding:10px;text-align:left;color:#ccc">管理学院(CRUD)</td><td style="color:#2ecc71">✅</td><td>❌</td><td>—</td><td>—</td><td>—</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222;background:#111"><td style="padding:10px;text-align:left;color:#ccc">学号规则管理</td><td style="color:#2ecc71">✅</td><td>❌</td><td>—</td><td>—</td><td>—</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222;background:#111"><td style="padding:10px;text-align:left;color:#ccc">学院管理员账号管理</td><td style="color:#2ecc71">✅</td><td>❌</td><td>—</td><td>—</td><td>—</td><td>❌</td></tr>
+
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">管理本院学生(筛选/编辑/删除)</td><td>✅</td><td style="color:#2ecc71">✅</td><td>—</td><td>—</td><td>—</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">管理所有学生(筛选/编辑/删除)</td><td style="color:#2ecc71">✅</td><td>❌</td><td>—</td><td>—</td><td>—</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">查看本院企业/数据</td><td>✅</td><td style="color:#2ecc71">✅</td><td>—</td><td>—</td><td>—</td><td>❌</td></tr>
+<tr style="border-bottom:1px solid #222"><td style="padding:10px;text-align:left;color:#ccc">全平台数据统计</td><td style="color:#2ecc71">✅</td><td>❌</td><td>—</td><td>—</td><td>—</td><td>❌</td></tr>
+
+<tr style="border-bottom:1px solid #222;background:#111"><td style="padding:10px;text-align:left;color:#ccc">消息(学院↔学生/企业↔学生)</td><td>—</td><td>🔜</td><td>🔜</td><td>❌</td><td>🔜</td><td>❌</td></tr>
+</table>
+</div>
+
+<div style="margin-top:12px;font-size:11px;color:#888">✅ = 可用 | ❌ = 不可用 | — = 不适用 | 🔜 = 二期</div>

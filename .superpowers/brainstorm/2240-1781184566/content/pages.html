@@ -1,0 +1,85 @@
+<h2>完整页面结构 — 5 个板块、30+ 页面</h2>
+<p class="subtitle">第一期所有页面，按角色分组</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;font-size:13px">
+
+<div style="background:#1a1a2e;border-radius:12px;padding:20px">
+  <div style="font-size:16px;font-weight:600;margin-bottom:4px">🌐 公共页面</div>
+  <div style="font-size:12px;color:#888;margin-bottom:12px">无需登录</div>
+  <div style="color:#ccc;line-height:2.2">
+    <b>/</b> — 平台首页（介绍+统计+最新岗位）<br>
+    <b>/jobs</b> — 岗位搜索列表页<br>
+    <b>/jobs/{id}</b> — 岗位详情页<br>
+    <b>/enterprises</b> — 已审核企业列表<br>
+    <b>/enterprises/{id}</b> — 企业详情页<br>
+    <b>/login</b> — 统一登录页<br>
+    <b>/register/student</b> — 学生注册<br>
+    <b>/register/enterprise</b> — 企业注册<br>
+    <b>/register/college</b> — 学院注册<br>
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:12px;padding:20px">
+  <div style="font-size:16px;font-weight:600;margin-bottom:4px">🎓 学生端</div>
+  <div style="font-size:12px;color:#888;margin-bottom:12px">需登录 · 路由 /student</div>
+  <div style="color:#ccc;line-height:2.2">
+    <b>/student/dashboard</b> — 个人中心首页<br>
+    <b>/student/resume</b> — 简历上传/替换/预览<br>
+    <b>/student/applications</b> — 我的投递记录<br>
+    <b>/student/messages</b> — 消息列表/对话（二期）<br>
+    <b>/student/profile</b> — 个人信息/修改密码
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:12px;padding:20px">
+  <div style="font-size:16px;font-weight:600;margin-bottom:4px">🏢 企业后台</div>
+  <div style="font-size:12px;color:#888;margin-bottom:12px">需登录 · 路由 /enterprise</div>
+  <div style="color:#ccc;line-height:2.2">
+    <b>/enterprise/dashboard</b> — 企业后台首页<br>
+    <b>/enterprise/audit-status</b> — 审核进度（未审核时）<br>
+    <b>/enterprise/docs/upload</b> — 上传/补充资质<br>
+    <b>/enterprise/jobs</b> — 岗位列表（发布中/已下线）<br>
+    <b>/enterprise/jobs/create</b> — 发布新岗位<br>
+    <b>/enterprise/jobs/{id}/edit</b> — 编辑岗位<br>
+    <b>/enterprise/jobs/{id}/applications</b> — 投递学生列表<br>
+    <b>/enterprise/resumes/browse</b> — 浏览学生简历<br>
+    <b>/enterprise/messages</b> — 消息（二期）<br>
+    <b>/enterprise/profile</b> — 企业信息/修改密码
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:12px;padding:20px">
+  <div style="font-size:16px;font-weight:600;margin-bottom:4px">🏛️ 学院后台</div>
+  <div style="font-size:12px;color:#888;margin-bottom:12px">需登录 · 路由 /admin/college</div>
+  <div style="color:#ccc;line-height:2.2">
+    <b>/admin/college/dashboard</b> — 数据统计首页<br>
+    <b>/admin/college/enterprises</b> — 本院企业列表<br>
+    <b>/admin/college/students</b> — 本院学生列表（筛选+搜索+编辑+删除）<br>
+    <b>/admin/college/messages</b> — 与学生沟通（二期）<br>
+    <b>/admin/college/profile</b> — 学院信息/修改密码
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:12px;padding:20px;grid-column:1/-1">
+  <div style="font-size:16px;font-weight:600;margin-bottom:4px">🏫 学校后台</div>
+  <div style="font-size:12px;color:#888;margin-bottom:12px">需登录 · 路由 /admin/school</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;color:#ccc;line-height:2.2">
+    <div>
+      <b>/admin/school/dashboard</b> — 全平台数据统计<br>
+      <b>/admin/school/colleges</b> — 学院管理（CRUD）<br>
+      <b>/admin/school/colleges/create</b> — 新增学院<br>
+      <b>/admin/school/colleges/{id}/edit</b> — 编辑学院<br>
+      <b>/admin/school/enterprises</b> — 企业列表（全部）<br>
+      <b>/admin/school/enterprises/{id}/audit</b> — 企业审核详情页<br>
+    </div>
+    <div>
+      <b>/admin/school/students</b> — 学生管理（筛选+搜索+编辑+删除）<br>
+      <b>/admin/school/admins</b> — 学院管理员账号管理<br>
+      <b>/admin/school/student-id-rules</b> — 学号匹配规则<br>
+      <b>/admin/school/settings</b> — 平台设置<br>
+      <b>/admin/school/profile</b> — 修改密码
+    </div>
+  </div>
+</div>
+
+</div>

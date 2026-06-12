@@ -1,0 +1,60 @@
+<h2>数据库表设计</h2>
+<p class="subtitle">第一期核心表</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;font-size:13px">
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;margin-bottom:6px">schools · 学校</div>
+  <div style="color:#888;line-height:1.8">id / name / 其他配置</div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;margin-bottom:6px">colleges · 学院</div>
+  <div style="color:#888;line-height:1.8">id / school_id / name / grade_levels</div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;margin-bottom:6px">users · 用户（统一表）</div>
+  <div style="color:#888;line-height:1.8">id / role(学校|学院|企业|学生) / college_id<br>name / phone / password / status</div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;margin-bottom:6px">enterprises · 企业资料</div>
+  <div style="color:#888;line-height:1.8">id / user_id / name / credit_code / industry / scale<br>contact_name / contact_phone / email / intro / college_id</div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;margin-bottom:6px">enterprise_docs · 审核资质文件</div>
+  <div style="color:#888;line-height:1.8">id / enterprise_id / type(执照/身份证/委托书)<br>file_path / status / reject_reason</div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;margin-bottom:6px">students · 学生资料</div>
+  <div style="color:#888;line-height:1.8">id / user_id / student_no / class_name / grade<br>resume_path / college_id(学号自动匹配)</div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;margin-bottom:6px">jobs · 招聘岗位</div>
+  <div style="color:#888;line-height:1.8">id / enterprise_id / title / count / city / salary_min<br>salary_max / education / major / skills / type<br>duty / requirement / welfare / status(上/下)</div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;margin-bottom:6px">applications · 投递记录</div>
+  <div style="color:#888;line-height:1.8">id / job_id / student_id / status / created_at</div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;margin-bottom:6px">student_id_rules · 学号匹配规则</div>
+  <div style="color:#888;line-height:1.8">id / school_id / prefix / college_id</div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;margin-bottom:6px">messages · 消息（二期）</div>
+  <div style="color:#888;line-height:1.8">id / from_id / to_id / content / read_at</div>
+</div>
+
+</div>
+
+<div style="margin-top:20px;font-size:12px;color:#f39c12;background:#1a1a2e;border-radius:10px;padding:14px">
+  💡 设计说明：users 统一登录表用 role 字段区分角色；企业/学生详情用独立 profile 表分开存储
+</div>

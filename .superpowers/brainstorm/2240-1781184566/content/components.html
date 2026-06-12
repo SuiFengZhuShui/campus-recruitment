@@ -1,0 +1,88 @@
+<h2>Vue 3 组件树 + 文件上传设计</h2>
+<p class="subtitle">前台 SPA + 后台 SPA 两套入口</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px">
+
+<div style="background:#1a1a2e;border-radius:12px;padding:20px">
+  <div style="font-size:16px;font-weight:600;margin-bottom:4px">🌐 前台 App</div>
+  <div style="font-size:12px;color:#888;margin-bottom:12px">Vite 入口：/resources/js/frontend/</div>
+  <div style="font-size:11px;color:#aaa;line-height:2;font-family:monospace">
+    App.vue<br>
+    ├─ layouts/PublicLayout.vue<br>
+    │  ├─ Header.vue（导航·未登录）<br>
+    │  └─ Footer.vue<br>
+    ├─ layouts/StudentLayout.vue<br>
+    │  ├─ StudentHeader.vue<br>
+    │  └─ StudentSidebar.vue<br>
+    ├─ pages/Home.vue<br>
+    ├─ pages/JobList.vue（筛选+搜索+分页）<br>
+    ├─ pages/JobDetail.vue（投递按钮）<br>
+    ├─ pages/EnterpriseList.vue<br>
+    ├─ pages/EnterpriseDetail.vue<br>
+    ├─ pages/Login.vue<br>
+    ├─ pages/RegisterStudent.vue<br>
+    ├─ pages/RegisterEnterprise.vue<br>
+    ├─ pages/student/Dashboard.vue<br>
+    ├─ pages/student/Resume.vue（上传/预览/替换）<br>
+    ├─ pages/student/Applications.vue<br>
+    └─ pages/student/Profile.vue
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:12px;padding:20px">
+  <div style="font-size:16px;font-weight:600;margin-bottom:4px">🔧 后台 App（三个面板）</div>
+  <div style="font-size:12px;color:#888;margin-bottom:12px">Vite 入口：/resources/js/admin/</div>
+  <div style="font-size:11px;color:#aaa;line-height:2;font-family:monospace">
+    AdminApp.vue<br>
+    ├─ layouts/AdminLayout.vue<br>
+    │  ├─ Sidebar.vue<br>
+    │  └─ TopBar.vue<br>
+    ├─ pages/school/<br>
+    │  ├─ Dashboard.vue<br>
+    │  ├─ CollegeList.vue<br>
+    │  ├─ CollegeForm.vue<br>
+    │  ├─ EnterpriseList.vue<br>
+    │  ├─ EnterpriseAudit.vue（审核详情）<br>
+    │  ├─ StudentList.vue（筛选+搜索）<br>
+    │  ├─ AdminList.vue（学院管理员）<br>
+    │  └─ StudentIdRules.vue<br>
+    ├─ pages/college/<br>
+    │  └─ Dashboard.vue<br>
+    └─ pages/enterprise/<br>
+       ├─ Dashboard.vue<br>
+       ├─ AuditStatus.vue<br>
+       ├─ DocUpload.vue<br>
+       ├─ JobList.vue<br>
+       ├─ JobForm.vue<br>
+       ├─ ApplicationList.vue<br>
+       └─ ResumeBrowse.vue
+  </div>
+</div>
+
+</div>
+
+<div style="background:#1a1a2e;border-radius:12px;padding:20px;margin-top:16px">
+  <div style="font-size:16px;font-weight:600;margin-bottom:12px">📁 文件上传设计</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:12px;color:#ccc">
+    <div style="background:#0a0a1e;border-radius:8px;padding:14px">
+      <b>企业资质文件</b><br>
+      <span style="color:#888;line-height:2">
+        • 后端：Laravel Storage（本地 disk / S3 可选）<br>
+        • 路径：<code>enterprises/{id}/docs/{type}_{timestamp}.{ext}</code><br>
+        • 白名单：jpg, png, pdf · 单文件 ≤ 10MB<br>
+        • 前端：&lt;input type="file"&gt; + 预览缩略图<br>
+        • 可逐个替换，不删除直接覆盖
+      </span>
+    </div>
+    <div style="background:#0a0a1e;border-radius:8px;padding:14px">
+      <b>学生简历文件</b><br>
+      <span style="color:#888;line-height:2">
+        • 路径：<code>students/{id}/resume_{timestamp}.{ext}</code><br>
+        • 白名单：pdf, doc, docx · ≤ 20MB<br>
+        • 学生只保留最新一份（上传覆盖旧文件）<br>
+        • 企业端提供预览（PDF直接显示）+ 下载<br>
+        • 企业浏览列表页展示学生基本字段（不暴露文件）
+      </span>
+    </div>
+  </div>
+</div>

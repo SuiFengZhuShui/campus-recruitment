@@ -1,0 +1,95 @@
+<h2>API 路由设计</h2>
+<p class="subtitle">Laravel API 路由 · 第一期全部端点</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;font-size:12px">
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;font-size:14px;margin-bottom:8px;color:#3498db">Auth · 认证</div>
+  <div style="color:#888;line-height:2;font-family:monospace">
+    POST /api/auth/login<br>
+    POST /api/auth/logout<br>
+    POST /api/auth/register/student<br>
+    POST /api/auth/register/enterprise<br>
+    GET  /api/auth/captcha<br>
+    GET  /api/auth/me
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;font-size:14px;margin-bottom:8px;color:#2ecc71">Jobs · 岗位（公开）</div>
+  <div style="color:#888;line-height:2;font-family:monospace">
+    GET  /api/jobs<br>
+    GET  /api/jobs/{id}<br>
+    GET  /api/enterprises<br>
+    GET  /api/enterprises/{id}
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;font-size:14px;margin-bottom:8px;color:#3498db">Student · 学生</div>
+  <div style="color:#888;line-height:2;font-family:monospace">
+    POST /api/student/resume<br>
+    DELETE /api/student/resume<br>
+    GET  /api/student/applications<br>
+    POST /api/student/jobs/{id}/apply<br>
+    PUT  /api/student/profile<br>
+    PUT  /api/student/password
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;font-size:14px;margin-bottom:8px;color:#3498db">Enterprise · 企业</div>
+  <div style="color:#888;line-height:2;font-family:monospace">
+    GET  /api/enterprise/audit-status<br>
+    POST /api/enterprise/docs<br>
+    DELETE /api/enterprise/docs/{id}<br>
+    GET  /api/enterprise/jobs<br>
+    POST /api/enterprise/jobs<br>
+    PUT  /api/enterprise/jobs/{id}<br>
+    PATCH /api/enterprise/jobs/{id}/status<br>
+    GET  /api/enterprise/jobs/{id}/applications<br>
+    GET  /api/enterprise/resumes<br>
+    GET  /api/enterprise/resumes/{id}/download<br>
+    PUT  /api/enterprise/profile<br>
+    PUT  /api/enterprise/password
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;font-size:14px;margin-bottom:8px;color:#f39c12">College Admin · 学院后台</div>
+  <div style="color:#888;line-height:2;font-family:monospace">
+    GET  /api/admin/college/dashboard<br>
+    GET  /api/admin/college/enterprises<br>
+    GET  /api/admin/college/students<br>
+    PUT  /api/admin/college/students/{id}<br>
+    DELETE /api/admin/college/students/{id}
+  </div>
+</div>
+
+<div style="background:#1a1a2e;border-radius:10px;padding:16px">
+  <div style="font-weight:600;font-size:14px;margin-bottom:8px;color:#e94560">School Admin · 学校后台</div>
+  <div style="color:#888;line-height:2;font-family:monospace">
+    GET  /api/admin/school/dashboard<br>
+    GET/POST /api/admin/school/colleges<br>
+    PUT/DELETE /api/admin/school/colleges/{id}<br>
+    GET  /api/admin/school/enterprises<br>
+    GET  /api/admin/school/enterprises/{id}<br>
+    POST /api/admin/school/enterprises/{id}/audit<br>
+    GET  /api/admin/school/students<br>
+    PUT/DELETE /api/admin/school/students/{id}<br>
+    GET/POST /api/admin/school/admins<br>
+    PUT/DELETE /api/admin/school/admins/{id}<br>
+    GET/POST/PUT/DELETE /api/admin/school/student-id-rules<br>
+    PUT  /api/admin/school/settings
+  </div>
+</div>
+
+</div>
+
+<div style="margin-top:18px;background:#0f3460;border-radius:10px;padding:16px;font-size:12px;color:#ccc">
+  <b>中间件策略：</b><br>
+  • <code style="color:#2ecc71">auth:sanctum</code> — 所有需登录的路由<br>
+  • <code style="color:#f39c12">role:school|college|enterprise|student</code> — 角色中间件<br>
+  • <code style="color:#e94560">enterprise.status:approved</code> — 企业功能需审核通过<br>
+  • <b>API 统一返回格式：</b> <code>{"code":200,"message":"success","data":{}}</code>
+</div>
