@@ -2,9 +2,17 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Web
-Route::get('/', function () {
-    return view('welcome');
+// Web — frontend
+Route::get('/', function () { return view('frontend.home'); });
+Route::get('/login', function () { return view('frontend.auth.login'); });
+Route::get('/register', function () { return view('frontend.auth.register'); });
+Route::get('/jobs/{id}', function () { return view('frontend.jobs.show'); });
+
+Route::middleware('auth')->group(function () {
+    Route::get('/enterprise/jobs', function () { return view('frontend.enterprise.jobs'); });
+    Route::get('/enterprise/jobs/{id}/applications', function () { return view('frontend.enterprise.applicants'); });
+    Route::get('/student/applications', function () { return view('frontend.student.applications'); });
+    Route::get('/student/profile', function () { return view('frontend.student.profile'); });
 });
 
 // Admin
