@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学校管理员登录 - 校园招聘平台</title>
+    <title>管理员登录 - 校园招聘平台</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
@@ -18,12 +18,15 @@
         .btn:hover { opacity: .9; }
         .error { color: #ef4444; font-size: 13px; margin-top: 4px; }
         .alert { background: #fef2f2; color: #991b1b; padding: 10px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 18px; }
+        .captcha-row { display: flex; gap: 8px; align-items: flex-end; }
+        .captcha-row input { flex: 1; }
+        .captcha-row img { height: 42px; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
     <div class="login-card">
         <h2>校园招聘平台</h2>
-        <p class="subtitle">学校管理员登录</p>
+        <p class="subtitle">管理员登录（学校/学院）</p>
 
         @if ($errors->any())
             <div class="alert">{{ $errors->first() }}</div>
@@ -38,6 +41,13 @@
             <div class="form-group">
                 <label>密码</label>
                 <input type="password" name="password" placeholder="请输入密码" required>
+            </div>
+            <div class="form-group">
+                <label>验证码</label>
+                <div class="captcha-row">
+                    <input type="text" name="captcha" maxlength="4" placeholder="4位验证码" required style="flex:1;">
+                    <img src="/api/auth/captcha" id="captchaImg" onclick="this.src='/api/auth/captcha?'+Date.now()" title="点击刷新" alt="验证码">
+                </div>
             </div>
             <button type="submit" class="btn">登 录</button>
         </form>

@@ -6,13 +6,13 @@ use Closure;
 
 class CheckRole
 {
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, ...$roles)
     {
         if (!auth()->check()) {
             return redirect()->route('admin.login');
         }
 
-        if (auth()->user()->role !== $role) {
+        if (!in_array(auth()->user()->role, $roles)) {
             abort(403, '无权访问');
         }
 

@@ -26,6 +26,13 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout')->name('admin.logout');
 
+    // College admin routes (accessible by both school and college roles)
+    Route::middleware(['auth', 'role:school,college'])->group(function () {
+        Route::get('college', 'CollegeDashboardController@index')->name('admin.college');
+        Route::get('college/students', 'CollegeDashboardController@students')->name('admin.college.students');
+        Route::get('college/enterprises', 'CollegeDashboardController@enterprises')->name('admin.college.enterprises');
+    });
+
     Route::middleware(['auth', 'role:school'])->group(function () {
         Route::get('/', 'DashboardController@index')->name('admin.dashboard');
         Route::get('enterprises', 'EnterpriseController@index')->name('admin.enterprises');

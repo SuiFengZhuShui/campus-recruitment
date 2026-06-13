@@ -22,10 +22,12 @@ class AdminTest extends TestCase
     public function test_admin_login_success()
     {
         $this->createAdminUser();
+        session(['captcha_code' => 'abcd']);
 
         $response = $this->post('/admin/login', [
             'username' => 'admin',
             'password' => 'password',
+            'captcha' => 'abcd',
         ]);
 
         $response->assertRedirect('/admin');
@@ -34,10 +36,12 @@ class AdminTest extends TestCase
     public function test_admin_login_wrong_password()
     {
         $this->createAdminUser();
+        session(['captcha_code' => 'abcd']);
 
         $response = $this->post('/admin/login', [
             'username' => 'admin',
             'password' => 'wrongpass',
+            'captcha' => 'abcd',
         ]);
 
         $response->assertSessionHasErrors();
@@ -46,10 +50,12 @@ class AdminTest extends TestCase
     public function test_admin_login_non_school_user()
     {
         User::create(['role' => 'student', 'username' => 'student1', 'name' => '学生', 'phone' => '13800000901', 'password' => Hash::make('password'), 'status' => 'active']);
+        session(['captcha_code' => 'abcd']);
 
         $response = $this->post('/admin/login', [
             'username' => 'student1',
             'password' => 'password',
+            'captcha' => 'abcd',
         ]);
 
         $response->assertSessionHasErrors();

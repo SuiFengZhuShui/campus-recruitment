@@ -20,10 +20,20 @@ class AuthController extends Controller
         $data = $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
+            'captcha' => 'required|string|size:4',
         ]);
 
+        // Verify captcha
+        $stored = session('captcha_code');
+        if (!$stored || strtolower($data['captcha']) !== strtolower($stored)) {
+            throw ValidationException::withMessages([
+                'captcha' => ['验证码不正确'],
+            ]);
+        }
+        session()->forget('captcha_code');
+
         $user = User::where('username', $data['username'])
-            ->where('role', 'school')
+            ->whereIn('role', ['school', 'college'])
             ->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {

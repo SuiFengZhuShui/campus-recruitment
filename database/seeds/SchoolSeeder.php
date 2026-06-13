@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\College;
 use App\Models\School;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -13,6 +14,12 @@ class SchoolSeeder extends Seeder
             'name' => '校园招聘平台',
         ]);
 
+        $college = College::create([
+            'school_id' => $school->id,
+            'name' => '计算机学院',
+        ]);
+
+        // School admin
         User::create([
             'role' => 'school',
             'username' => 'admin',
@@ -24,6 +31,19 @@ class SchoolSeeder extends Seeder
             'status' => 'active',
         ]);
 
-        $this->command->info("School admin created: admin / admin123 (school_id={$school->id})");
+        // College admin
+        User::create([
+            'role' => 'college',
+            'username' => 'college',
+            'college_id' => $college->id,
+            'name' => '计算机学院管理员',
+            'phone' => '13800000001',
+            'email' => 'college@school.com',
+            'password' => Hash::make('college123'),
+            'status' => 'active',
+        ]);
+
+        $this->command->info("School admin: admin / admin123");
+        $this->command->info("College admin: college / college123 (college_id={$college->id})");
     }
 }
