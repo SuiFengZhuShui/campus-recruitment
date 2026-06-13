@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CaptchaController;
+use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\JobController;
+use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\StudentController;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +40,16 @@ Route::group(['middleware' => ['web']], function () {
         // Enterprise views applicants
         Route::get('my/jobs/{jobId}/applications', [ApplicationController::class, 'jobApplications']);
         Route::put('my/jobs/{jobId}/applications/{applicationId}/status', [ApplicationController::class, 'updateStatus']);
+
+        // Interviews
+        Route::post('my/jobs/{jobId}/applications/{applicationId}/interview', [InterviewController::class, 'store']);
+        Route::put('my/interviews/{id}/respond', [InterviewController::class, 'respond']);
+        Route::get('my/interviews', [InterviewController::class, 'myInterviews']);
+
+        // Offers
+        Route::post('my/jobs/{jobId}/applications/{applicationId}/offer', [OfferController::class, 'store']);
+        Route::put('my/offers/{id}/respond', [OfferController::class, 'respond']);
+        Route::get('my/offers', [OfferController::class, 'myOffers']);
     });
 
     // Jobs — public

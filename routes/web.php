@@ -15,6 +15,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/enterprise/jobs', function () { return view('frontend.enterprise.jobs'); });
     Route::get('/enterprise/jobs/{id}/applications', function () { return view('frontend.enterprise.applicants'); });
     Route::get('/student/applications', function () { return view('frontend.student.applications'); });
+    Route::get('/student/interviews', function () { return view('frontend.student.interviews'); });
+    Route::get('/student/offers', function () { return view('frontend.student.offers'); });
     Route::get('/student/profile', function () { return view('frontend.student.profile'); });
 });
 

@@ -7,10 +7,47 @@
     <a href="/enterprise/jobs" style="display:inline-flex;align-items:center;gap:4px;padding:8px 18px;background:linear-gradient(135deg,#c7915c,#d4a574);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;margin-bottom:16px;">&larr; 返回岗位管理</a>
     <h1 style="font-size:20px;margin-bottom:20px;" id="jobTitle">投递列表</h1>
     <div id="appList"></div>
+
+    <!-- Interview Modal -->
+    <div id="interviewModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;">
+        <div class="card" style="width:100%;max-width:480px;padding:24px;">
+            <h3 style="font-size:16px;margin-bottom:16px;">安排面试</h3>
+            <form id="interviewForm" onsubmit="doScheduleInterview(event)">
+                <input type="hidden" id="ivAppId">
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:13px;color:#475569;">面试时间</label>
+                    <input type="datetime-local" name="scheduled_at" required style="width:100%;padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:13px;color:#475569;">面试方式</label>
+                    <select name="type" style="width:100%;padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;">
+                        <option value="on-site">线下面试</option>
+                        <option value="online">线上面试</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:13px;color:#475569;">地点/会议链接</label>
+                    <input type="text" name="location" required style="width:100%;padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;" placeholder="会议室地址或线上链接">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:13px;color:#475569;">联系人（选填）</label>
+                    <input type="text" name="contact" style="width:100%;padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;" placeholder="联系人姓名/电话">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label style="font-size:13px;color:#475569;">备注（选填）</label>
+                    <textarea name="note" rows="2" style="width:100%;padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;" placeholder="注意事项"></textarea>
+                </div>
+                <div style="display:flex;gap:8px;justify-content:flex-end;">
+                    <button type="button" onclick="closeInterviewModal()" style="padding:8px 16px;background:#e2e8f0;border:none;border-radius:6px;cursor:pointer;">取消</button>
+                    <button type="submit" class="btn btn-primary" style="padding:8px 16px;justify-content:center;">发送邀请</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
-const jobId = window.location.pathname.split('/')[3]; // /enterprise/jobs/{id}/applications
+const jobId = window.location.pathname.split('/')[3];
 const STATUS_MAP = {pending:'待审核',reviewed:'已查看',interviewed:'面试中',accepted:'已录用',rejected:'未通过'};
 const STATUS_COLOR = {pending:'#92400e',reviewed:'#1e40af',interviewed:'#7c3aed',accepted:'#065f46',rejected:'#991b1b'};
 const STATUS_BG = {pending:'#fef3c7',reviewed:'#dbeafe',interviewed:'#ede9fe',accepted:'#d1fae5',rejected:'#fee2e2'};
@@ -49,6 +86,7 @@ async function load() {
                             <option value="accepted" ${a.status==='accepted'?'selected':''}>已录用</option>
                             <option value="rejected" ${a.status==='rejected'?'selected':''}>未通过</option>
                         </select>
+                        <button onclick="openInterviewModal(${a.id})" style="margin-top:8px;padding:4px 12px;background:#7c3aed;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;">+ 安排面试</button>
                     </div>
                 </div>
             </div>
@@ -61,8 +99,7 @@ async function load() {
 async function updateStatus(applicationId, status) {
     if (!status) return;
     if (!confirm('确认将状态改为「' + STATUS_MAP[status] + '」？')) {
-        load(); // Reset select
-        return;
+        load(); return;
     }
     try {
         const r = await fetch('/api/my/jobs/' + jobId + '/applications/' + applicationId + '/status', {
@@ -71,16 +108,37 @@ async function updateStatus(applicationId, status) {
             body: JSON.stringify({status: status})
         });
         const d = await r.json();
+        if (d.code === 200) load(); else { alert(d.message); load(); }
+    } catch(e) { alert('网络错误'); load(); }
+}
+
+function openInterviewModal(appId) {
+    document.getElementById('ivAppId').value = appId;
+    document.getElementById('interviewModal').style.display = 'flex';
+}
+
+function closeInterviewModal() {
+    document.getElementById('interviewModal').style.display = 'none';
+    document.getElementById('interviewForm').reset();
+}
+
+async function doScheduleInterview(e) {
+    e.preventDefault();
+    const appId = document.getElementById('ivAppId').value;
+    const fd = new FormData(e.target);
+    try {
+        const r = await fetch('/api/my/jobs/' + jobId + '/applications/' + appId + '/interview', {
+            method:'POST', body:fd,
+            headers:{'X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content}
+        });
+        const d = await r.json();
         if (d.code === 200) {
-            load(); // Refresh list
+            closeInterviewModal();
+            load();
         } else {
             alert(d.message || '操作失败');
-            load();
         }
-    } catch(e) {
-        alert('网络错误');
-        load();
-    }
+    } catch(e) { alert('网络错误'); }
 }
 
 load();
