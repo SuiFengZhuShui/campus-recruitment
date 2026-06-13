@@ -7,7 +7,9 @@ use App\Models\Enterprise;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -159,6 +161,65 @@ class AuthController extends Controller
         auth()->login($user);
 
         return $this->respond($user);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $data = $request->validate([
+            'email' => 'required|email|max:100',
+        ]);
+
+        $user = User::where('email', $data['email'])->first();
+        if (!$user) {
+            // Don't reveal whether email exists
+            return response()->json(['code' => 200, 'message' => '如果该邮箱已注册，重置链接已发送', 'data' => null]);
+        }
+
+        // Generate token
+        $token = Str::random(60);
+        DB::table('password_resets')->where('email', $data['email'])->delete();
+        DB::table('password_resets')->insert([
+            'email' => $data['email'],
+            'token' => Hash::make($token),
+            'created_at' => now(),
+        ]);
+
+        // In production, send email. For dev, log the reset token.
+        \Log::info("Password reset for {$data['email']}: token={$token}");
+
+        return response()->json(['code' => 200, 'message' => '如果该邮箱已注册，重置链接已发送', 'data' => null]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $data = $request->validate([
+            'email' => 'required|email|max:100',
+            'token' => 'required|string',
+            'password' => 'required|string|min:6|max:50',
+        ]);
+
+        $reset = DB::table('password_resets')->where('email', $data['email'])->first();
+        if (!$reset || !Hash::check($data['token'], $reset->token)) {
+            throw ValidationException::withMessages([
+                'token' => ['重置链接无效或已过期'],
+            ]);
+        }
+
+        // Token expires after 60 minutes
+        if (strtotime($reset->created_at) < strtotime('-60 minutes')) {
+            DB::table('password_resets')->where('email', $data['email'])->delete();
+            throw ValidationException::withMessages([
+                'token' => ['重置链接已过期，请重新申请'],
+            ]);
+        }
+
+        $user = User::where('email', $data['email'])->firstOrFail();
+        $user->fill(['password' => Hash::make($data['password'])])->save();
+
+        // Clean up used token
+        DB::table('password_resets')->where('email', $data['email'])->delete();
+
+        return response()->json(['code' => 200, 'message' => '密码已重置，请登录', 'data' => null]);
     }
 
     public function logout(Request $request)

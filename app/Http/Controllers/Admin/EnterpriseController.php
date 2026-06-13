@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\College;
 use App\Models\Enterprise;
 use App\Models\EnterpriseDoc;
+use App\Notifications\EnterpriseApproved;
+use App\Notifications\EnterpriseRejected;
 use Illuminate\Http\Request;
 
 class EnterpriseController extends Controller
@@ -46,6 +48,15 @@ class EnterpriseController extends Controller
             'college_id' => $data['college_id'],
         ]);
 
+        // Notify enterprise user (non-blocking)
+        try {
+            if ($enterprise->user) {
+                $enterprise->user->notify(new EnterpriseApproved($enterprise));
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Failed to send approval notification: ' . $e->getMessage());
+        }
+
         return redirect()->route('admin.enterprises', ['status' => 'approved'])
             ->with('success', '已通过「' . $enterprise->name . '」的审核');
     }
@@ -66,6 +77,15 @@ class EnterpriseController extends Controller
             'status' => 'rejected',
             'audit_remark' => $data['audit_remark'],
         ]);
+
+        // Notify enterprise user (non-blocking)
+        try {
+            if ($enterprise->user) {
+                $enterprise->user->notify(new EnterpriseRejected($enterprise));
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Failed to send rejection notification: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.enterprises', ['status' => 'rejected'])
             ->with('success', '已驳回「' . $enterprise->name . '」的申请');

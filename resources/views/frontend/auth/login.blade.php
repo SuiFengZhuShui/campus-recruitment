@@ -28,6 +28,8 @@
         </form>
         <div style="text-align:center;margin-top:16px;font-size:14px;color:#64748b;">
             没有账号？<a href="/register" style="color:#3b82f6;">立即注册</a>
+            <span style="margin:0 8px;">|</span>
+            <a href="/forgot-password" style="color:#3b82f6;">忘记密码</a>
         </div>
     </div>
 </div>

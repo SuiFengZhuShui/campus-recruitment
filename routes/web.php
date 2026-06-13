@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () { return view('frontend.home'); });
 Route::get('/login', function () { return view('frontend.auth.login'); });
 Route::get('/register', function () { return view('frontend.auth.register'); });
+Route::get('/forgot-password', function () { return view('frontend.auth.forgot-password'); });
+Route::get('/reset-password', function () { return view('frontend.auth.reset-password'); });
 Route::get('/jobs/{id}', function () { return view('frontend.jobs.show'); });
 
 Route::middleware('auth')->group(function () {

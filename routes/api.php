@@ -13,6 +13,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('auth/login', [AuthController::class, 'login']);
     Route::post('auth/register/student', [AuthController::class, 'registerStudent']);
     Route::post('auth/register/enterprise', [AuthController::class, 'registerEnterprise']);
+    Route::post('auth/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('auth/reset-password', [AuthController::class, 'resetPassword']);
 
     // Auth — protected
     Route::middleware('auth')->group(function () {
@@ -35,6 +37,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('my/applications', [ApplicationController::class, 'myApplications']);
         // Enterprise views applicants
         Route::get('my/jobs/{jobId}/applications', [ApplicationController::class, 'jobApplications']);
+        Route::put('my/jobs/{jobId}/applications/{applicationId}/status', [ApplicationController::class, 'updateStatus']);
     });
 
     // Jobs — public

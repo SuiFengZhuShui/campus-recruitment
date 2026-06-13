@@ -9,6 +9,10 @@
 </div>
 
 <script>
+const STATUS_MAP = {pending:'待审核',reviewed:'已查看',interviewed:'面试中',accepted:'已录用',rejected:'未通过'};
+const STATUS_COLOR = {pending:'#92400e',reviewed:'#1e40af',interviewed:'#7c3aed',accepted:'#065f46',rejected:'#991b1b'};
+const STATUS_BG = {pending:'#fef3c7',reviewed:'#dbeafe',interviewed:'#ede9fe',accepted:'#d1fae5',rejected:'#fee2e2'};
+
 async function load() {
     try {
         const r = await fetch('/api/my/applications', {headers:{'Accept':'application/json'}});
@@ -30,10 +34,11 @@ async function load() {
                         </div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-size:13px;color:#94a3b8;">投递时间</div>
-                        <div style="font-size:14px;">${new Date(a.created_at).toLocaleDateString('zh-CN')}</div>
+                        <span style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;color:${STATUS_COLOR[a.status]||'#64748b'};background:${STATUS_BG[a.status]||'#f1f5f9'};">${STATUS_MAP[a.status]||'未知'}</span>
+                        <div style="font-size:13px;color:#94a3b8;margin-top:4px;">${new Date(a.created_at).toLocaleDateString('zh-CN')}</div>
                     </div>
                 </div>
+                ${a.remark ? `<div style="margin-top:8px;font-size:13px;color:#64748b;background:#f8fafc;padding:6px 10px;border-radius:6px;">备注：${a.remark}</div>` : ''}
             </div>
         `).join('');
     } catch(e) {
