@@ -4,16 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateEnterpriseDocsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('enterprise_docs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('enterprise_id')->constrained('enterprises')->cascadeOnDelete()->comment('FK → enterprises.id');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('enterprise_id')->comment('FK → enterprises.id');
+            $table->foreign('enterprise_id')->references('id')->on('enterprises')->onDelete('cascade');
             $table->enum('type', ['license', 'id_card', 'authorization'])->comment('执照/身份证/授权书');
             $table->string('file_path', 500)->comment('存储路径');
             $table->string('file_name', 200)->comment('原始文件名');
@@ -23,11 +21,8 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('enterprise_docs');
     }
-};
+}

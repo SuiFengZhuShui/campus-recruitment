@@ -12,9 +12,15 @@ class DeactivateExpiredJobs extends Command
 
     public function handle()
     {
-        $count = Job::where('status', 'active')
+        $jobs = Job::where('status', 'active')
             ->where('created_at', '<', now()->subDays(30))
-            ->update(['status' => 'inactive']);
+            ->get();
+
+        $count = 0;
+        foreach ($jobs as $job) {
+            $job->fill(['status' => 'inactive'])->save();
+            $count++;
+        }
 
         $this->info("已下架 {$count} 个过期岗位");
     }

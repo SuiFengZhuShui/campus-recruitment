@@ -12,11 +12,11 @@
             <directory>tests/Feature</directory>
         </testsuite>
     </testsuites>
-    <source>
-        <include>
+    <filter>
+        <whitelist>
             <directory>app</directory>
-        </include>
-    </source>
+        </whitelist>
+    </filter>
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>

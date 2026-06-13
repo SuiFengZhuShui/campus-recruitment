@@ -4,16 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateJobsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('jobs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('enterprise_id')->constrained('enterprises')->cascadeOnDelete()->comment('FK → enterprises.id');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('enterprise_id')->comment('FK → enterprises.id');
+            $table->foreign('enterprise_id')->references('id')->on('enterprises')->onDelete('cascade');
             $table->string('title', 200)->comment('岗位名称');
             $table->unsignedInteger('count')->comment('招聘人数');
             $table->string('city', 50)->comment('工作城市');
@@ -31,11 +29,8 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('jobs');
     }
-};
+}

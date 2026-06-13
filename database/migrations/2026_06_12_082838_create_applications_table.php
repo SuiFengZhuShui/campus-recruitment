@@ -4,27 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateApplicationsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('applications', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('job_id')->constrained('jobs')->cascadeOnDelete()->comment('FK → jobs.id');
-            $table->foreignId('student_id')->constrained('students')->cascadeOnDelete()->comment('FK → students.id');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('job_id')->comment('FK → jobs.id');
+            $table->foreign('job_id')->references('id')->on('jobs')->onDelete('cascade');
+            $table->unsignedBigInteger('student_id')->comment('FK → students.id');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->timestamps();
             $table->unique(['job_id', 'student_id'], 'uk_job_student');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('applications');
     }
-};
+}
