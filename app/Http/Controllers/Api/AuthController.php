@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Notifications\PasswordReset as PasswordResetNotification;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -113,9 +115,22 @@ class AuthController extends Controller
             $file = $request->file($field);
             $fileName = $file->getClientOriginalName();
             $filePath = $file->storeAs(
-                'enterprise_docs/' . $enterprise->id,
-                uniqid() . '_' . preg_replace('/[^\w\.]/u', '_', $fileName)
+                'enterprises/' . $enterprise->id . '/docs',
+                $type . '_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension()
             );
+
+            if (!$filePath) {
+                // Clean up partially uploaded files and records
+                foreach (\App\Models\EnterpriseDoc::where('enterprise_id', $enterprise->id)->get() as $existingDoc) {
+                    if (\Storage::exists($existingDoc->file_path)) {
+                        \Storage::delete($existingDoc->file_path);
+                    }
+                    $existingDoc->delete();
+                }
+                $enterprise->delete();
+                $user->delete();
+                return response()->json(['code' => 500, 'message' => '文件上传失败，请稍后重试', 'data' => null], 500);
+            }
 
             \App\Models\EnterpriseDoc::create([
                 'enterprise_id' => $enterprise->id,
@@ -186,8 +201,12 @@ class AuthController extends Controller
             'created_at' => now(),
         ]);
 
-        // In production, send email. For dev, log the reset token.
-        \Log::info("Password reset for {$data['email']}: token={$token}");
+        // Send password reset email (non-blocking)
+        try {
+            $user->notify(new PasswordResetNotification($token));
+        } catch (\Exception $e) {
+            \Log::warning('Failed to send password reset email: ' . $e->getMessage());
+        }
 
         return response()->json(['code' => 200, 'message' => '如果该邮箱已注册，重置链接已发送', 'data' => null]);
     }

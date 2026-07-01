@@ -25,11 +25,12 @@ class EnterpriseController extends Controller
         }
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('contact_name', 'like', "%{$search}%")
-                  ->orWhere('contact_phone', 'like', "%{$search}%")
-                  ->orWhere('industry', 'like', "%{$search}%");
+            $escapedSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $query->where(function ($q) use ($escapedSearch) {
+                $q->where('name', 'like', "%{$escapedSearch}%")
+                  ->orWhere('contact_name', 'like', "%{$escapedSearch}%")
+                  ->orWhere('contact_phone', 'like', "%{$escapedSearch}%")
+                  ->orWhere('industry', 'like', "%{$escapedSearch}%");
             });
         }
 
@@ -148,7 +149,7 @@ class EnterpriseController extends Controller
     public function viewDoc($docId)
     {
         $doc = EnterpriseDoc::findOrFail($docId);
-        $path = storage_path('app/' . $doc->file_path);
+        $path = \Storage::disk('local')->path($doc->file_path);
         if (!file_exists($path)) {
             abort(404, '文件不存在');
         }

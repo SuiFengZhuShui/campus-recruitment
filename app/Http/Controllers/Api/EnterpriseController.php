@@ -15,9 +15,10 @@ class EnterpriseController extends Controller
             ->orderBy('created_at', 'desc');
 
         if ($request->keyword) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', "%{$request->keyword}%")
-                  ->orWhere('industry', 'like', "%{$request->keyword}%");
+            $keyword = str_replace(['%', '_'], ['\%', '\_'], $request->keyword);
+            $query->where(function ($q) use ($keyword) {
+                $q->where('name', 'like', "%{$keyword}%")
+                  ->orWhere('industry', 'like', "%{$keyword}%");
             });
         }
         if ($request->industry) {

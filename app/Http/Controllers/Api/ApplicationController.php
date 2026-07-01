@@ -25,6 +25,11 @@ class ApplicationController extends Controller
         $job = Job::where('status', 'active')->findOrFail($jobId);
         $student = Student::where('user_id', $user->id)->firstOrFail();
 
+        // Check student has uploaded a resume
+        if (empty($student->resume_path)) {
+            return response()->json(['code' => 422, 'message' => '请先上传简历后再投递', 'data' => null], 422);
+        }
+
         // Check duplicate
         $exists = Application::where('job_id', $jobId)->where('student_id', $student->id)->exists();
         if ($exists) {

@@ -29,7 +29,7 @@ class ApplicationTest extends TestCase
 
         // Create student
         $this->studentUser = User::create(['role' => 'student', 'username' => 'stu1', 'name' => '张三', 'phone' => '13800000300', 'email' => 'stu1@test.com', 'password' => Hash::make('password'), 'status' => 'active']);
-        $this->student = Student::create(['user_id' => $this->studentUser->id, 'student_no' => '20240001', 'class_name' => '计科1班', 'grade' => '2024', 'college_id' => $college->id]);
+        $this->student = Student::create(['user_id' => $this->studentUser->id, 'student_no' => '20240001', 'class_name' => '计科1班', 'grade' => '2024', 'college_id' => $college->id, 'resume_path' => 'resumes/test_resume.pdf']);
 
         // Create enterprise
         $this->enterpriseUser = User::create(['role' => 'enterprise', 'username' => 'ent1', 'name' => '企业', 'phone' => '13800000301', 'email' => 'ent1@test.com', 'password' => Hash::make('password'), 'status' => 'active']);

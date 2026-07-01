@@ -69,7 +69,7 @@ class NotificationTest extends TestCase
         $job = Job::create(['enterprise_id' => $enterprise->id, 'title' => '测试岗位', 'count' => 3, 'city' => '北京', 'salary_min' => 10000, 'salary_max' => 20000, 'education' => '本科', 'type' => 'full-time', 'duty' => 'Code', 'requirement' => 'PHP', 'status' => 'active']);
 
         $stuUser = User::create(['role' => 'student', 'username' => 'app_stu', 'name' => '学生', 'phone' => '13800000611', 'email' => 'stu@test.com', 'password' => Hash::make('password'), 'status' => 'active']);
-        $student = Student::create(['user_id' => $stuUser->id, 'student_no' => '20240001', 'class_name' => '计科1班', 'grade' => '2024', 'college_id' => $college->id]);
+        $student = Student::create(['user_id' => $stuUser->id, 'student_no' => '20240001', 'class_name' => '计科1班', 'grade' => '2024', 'college_id' => $college->id, 'resume_path' => 'resumes/test_resume.pdf']);
 
         $this->actingAs($stuUser)->postJson('/api/jobs/' . $job->id . '/apply');
 

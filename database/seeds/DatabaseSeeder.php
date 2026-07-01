@@ -7,6 +7,7 @@ use App\Models\Interview;
 use App\Models\Job;
 use App\Models\Offer;
 use App\Models\School;
+use App\Models\EnterpriseDoc;
 use App\Models\Student;
 use App\Models\StudentIdRule;
 use App\Models\User;
@@ -85,6 +86,26 @@ class DatabaseSeeder extends Seeder
         }
 
         $approvedEnterprises = Enterprise::where('status', 'approved')->get();
+
+        // === Enterprise Docs (approved enterprises get qualification docs) ===
+        $docNum = 0;
+        foreach ($approvedEnterprises as $enterprise) {
+            $docTypes = [
+                ['type' => 'license', 'file_name' => '营业执照.pdf'],
+                ['type' => 'id_card', 'file_name' => '身份证.pdf'],
+                ['type' => 'authorization', 'file_name' => '授权书.pdf'],
+            ];
+            foreach ($docTypes as $dt) {
+                EnterpriseDoc::create([
+                    'enterprise_id' => $enterprise->id,
+                    'type' => $dt['type'],
+                    'file_path' => 'enterprises/' . $enterprise->id . '/docs/seed_' . uniqid() . '_' . $dt['file_name'],
+                    'file_name' => $dt['file_name'],
+                    'status' => 'approved',
+                ]);
+                $docNum++;
+            }
+        }
 
         // === Students (32, 每学院4个) ===
         $stuNames = [

@@ -8,6 +8,7 @@ use App\Models\Enterprise;
 use App\Models\Interview;
 use App\Models\Job;
 use App\Models\Student;
+use App\Notifications\InterviewScheduled;
 use Illuminate\Http\Request;
 
 class InterviewController extends Controller
@@ -39,6 +40,16 @@ class InterviewController extends Controller
 
         // Auto-set application status to interviewed
         $application->fill(['status' => 'interviewed'])->save();
+
+        // Notify student (non-blocking)
+        try {
+            $studentUser = $application->student->user;
+            if ($studentUser) {
+                $studentUser->notify(new InterviewScheduled($interview));
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Failed to send interview notification: ' . $e->getMessage());
+        }
 
         return response()->json([
             'code' => 200,

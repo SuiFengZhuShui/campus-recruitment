@@ -22,11 +22,12 @@ class UserController extends Controller
         }
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('username', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+            $escapedSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $query->where(function ($q) use ($escapedSearch) {
+                $q->where('name', 'like', "%{$escapedSearch}%")
+                  ->orWhere('username', 'like', "%{$escapedSearch}%")
+                  ->orWhere('phone', 'like', "%{$escapedSearch}%")
+                  ->orWhere('email', 'like', "%{$escapedSearch}%");
             });
         }
 
