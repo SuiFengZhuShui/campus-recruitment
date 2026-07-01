@@ -43,6 +43,20 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
         Route::get('college', 'CollegeDashboardController@index')->name('admin.college');
         Route::get('college/students', 'CollegeDashboardController@students')->name('admin.college.students');
         Route::get('college/enterprises', 'CollegeDashboardController@enterprises')->name('admin.college.enterprises');
+
+        // Enterprise review (school and college admins can approve/reject)
+        Route::post('enterprises/{id}/approve', 'EnterpriseController@approve')->name('admin.enterprises.approve');
+        Route::post('enterprises/{id}/reject', 'EnterpriseController@reject')->name('admin.enterprises.reject');
+        Route::post('enterprises/{id}/docs/{docId}/approve', 'EnterpriseController@approveDoc')->name('admin.enterprises.doc.approve');
+        Route::post('enterprises/{id}/docs/{docId}/reject', 'EnterpriseController@rejectDoc')->name('admin.enterprises.doc.reject');
+        Route::post('enterprises/{id}/docs/approve-all', 'EnterpriseController@approveAllDocs')->name('admin.enterprises.doc.approveAll');
+        Route::get('docs/{docId}/view', 'EnterpriseController@viewDoc')->name('admin.enterprises.doc.view');
+
+        // Student ID Rules (school and college admins can manage)
+        Route::get('rules', 'StudentIdRuleController@index')->name('admin.rules');
+        Route::post('rules', 'StudentIdRuleController@store')->name('admin.rules.store');
+        Route::put('rules/{id}', 'StudentIdRuleController@update')->name('admin.rules.update');
+        Route::delete('rules/{id}', 'StudentIdRuleController@destroy')->name('admin.rules.destroy');
     });
 
     Route::middleware(['auth', 'role:school'])->group(function () {
@@ -52,24 +66,12 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
         Route::get('enterprises/{id}/edit', 'EnterpriseController@edit')->name('admin.enterprises.edit');
         Route::put('enterprises/{id}', 'EnterpriseController@update')->name('admin.enterprises.update');
         Route::delete('enterprises/{id}', 'EnterpriseController@destroy')->name('admin.enterprises.destroy');
-        Route::post('enterprises/{id}/approve', 'EnterpriseController@approve')->name('admin.enterprises.approve');
-        Route::post('enterprises/{id}/reject', 'EnterpriseController@reject')->name('admin.enterprises.reject');
-        Route::post('enterprises/{id}/docs/{docId}/approve', 'EnterpriseController@approveDoc')->name('admin.enterprises.doc.approve');
-        Route::post('enterprises/{id}/docs/{docId}/reject', 'EnterpriseController@rejectDoc')->name('admin.enterprises.doc.reject');
-        Route::post('enterprises/{id}/docs/approve-all', 'EnterpriseController@approveAllDocs')->name('admin.enterprises.doc.approveAll');
-        Route::get('docs/{docId}/view', 'EnterpriseController@viewDoc')->name('admin.enterprises.doc.view');
 
         // Colleges
         Route::get('colleges', 'CollegeController@index')->name('admin.colleges');
         Route::post('colleges', 'CollegeController@store')->name('admin.colleges.store');
         Route::put('colleges/{id}', 'CollegeController@update')->name('admin.colleges.update');
         Route::delete('colleges/{id}', 'CollegeController@destroy')->name('admin.colleges.destroy');
-
-        // Student ID Rules
-        Route::get('rules', 'StudentIdRuleController@index')->name('admin.rules');
-        Route::post('rules', 'StudentIdRuleController@store')->name('admin.rules.store');
-        Route::put('rules/{id}', 'StudentIdRuleController@update')->name('admin.rules.update');
-        Route::delete('rules/{id}', 'StudentIdRuleController@destroy')->name('admin.rules.destroy');
 
         // Schools
         Route::get('schools', 'SchoolController@index')->name('admin.schools');
@@ -91,6 +93,11 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
         Route::put('admins/{id}', 'CollegeAdminController@update')->name('admin.admins.update');
         Route::delete('admins/{id}', 'CollegeAdminController@destroy')->name('admin.admins.destroy');
         Route::post('admins/{id}/toggle', 'CollegeAdminController@toggle')->name('admin.admins.toggle');
+
+        // Jobs
+        Route::get('jobs', 'JobController@index')->name('admin.jobs');
+        Route::post('jobs/{id}/toggle', 'JobController@toggle')->name('admin.jobs.toggle');
+        Route::delete('jobs/{id}', 'JobController@destroy')->name('admin.jobs.destroy');
     });
 
     // Profile — both school and college can change password

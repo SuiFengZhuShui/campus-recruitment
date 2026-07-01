@@ -146,11 +146,12 @@ class EnterpriseManageController extends Controller
             });
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->whereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                })->orWhere('student_no', 'like', "%{$search}%")
-                  ->orWhere('class_name', 'like', "%{$search}%");
+            $escapedSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $query->where(function ($q) use ($escapedSearch) {
+                $q->whereHas('user', function ($q) use ($escapedSearch) {
+                    $q->where('name', 'like', "%{$escapedSearch}%");
+                })->orWhere('student_no', 'like', "%{$escapedSearch}%")
+                  ->orWhere('class_name', 'like', "%{$escapedSearch}%");
             });
         }
         if ($collegeId) {

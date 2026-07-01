@@ -26,8 +26,9 @@
                 <li><a href="{{ url('admin/users') }}" class="{{ request()->is('admin/users*') ? 'active' : '' }}">👥 用户管理</a></li>
                 <li><a href="{{ url('admin/colleges') }}" class="{{ request()->is('admin/colleges*') ? 'active' : '' }}">📚 学院管理</a></li>
                 <li><a href="{{ url('admin/admins') }}" class="{{ request()->is('admin/admins*') ? 'active' : '' }}">👤 管理员账号</a></li>
-                <li><a href="{{ url('admin/rules') }}" class="{{ request()->is('admin/rules*') ? 'active' : '' }}">🔗 学号规则</a></li>
+                <li><a href="{{ url('admin/jobs') }}" class="{{ request()->is('admin/jobs*') ? 'active' : '' }}">💼 岗位管理</a></li>
                 @endif
+                <li><a href="{{ url('admin/rules') }}" class="{{ request()->is('admin/rules*') ? 'active' : '' }}">🔗 学号规则</a></li>
                 <li><a href="{{ url('admin/college') }}" class="{{ request()->is('admin/college') ? 'active' : '' }}">📊 {{ $role === 'college' ? '本院数据' : '全校数据' }}</a></li>
             </ul>
             <ul class="sidebar-menu" style="margin-top:auto;border-top:1px solid var(--color-border);padding-top:12px;">

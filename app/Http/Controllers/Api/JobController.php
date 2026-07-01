@@ -19,9 +19,10 @@ class JobController extends Controller
             ->where('created_at', '>=', now()->subDays(30));
 
         if ($request->keyword) {
-            $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->keyword . '%')
-                  ->orWhere('skills', 'like', '%' . $request->keyword . '%');
+            $keyword = str_replace(['%', '_'], ['\%', '\_'], $request->keyword);
+            $query->where(function ($q) use ($keyword) {
+                $q->where('title', 'like', '%' . $keyword . '%')
+                  ->orWhere('skills', 'like', '%' . $keyword . '%');
             });
         }
         if ($request->city) {
