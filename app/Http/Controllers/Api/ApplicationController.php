@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Enterprise;
+use App\Models\Interview;
 use App\Models\Job;
 use App\Models\Student;
 use App\Notifications\ApplicationSubmitted;
@@ -101,6 +102,16 @@ class ApplicationController extends Controller
 
         $application->fill($data)->save();
 
+        // When rejected, auto-decline any pending interview
+        if ($data['status'] === 'rejected') {
+            $interview = Interview::where('application_id', $application->id)
+                ->whereIn('status', ['invited', 'accepted'])
+                ->first();
+            if ($interview) {
+                $interview->fill(['status' => 'declined'])->save();
+            }
+        }
+
         $statusLabel = $application->statusLabel();
 
         return response()->json([
@@ -122,7 +133,7 @@ class ApplicationController extends Controller
         $enterprise = Enterprise::where('user_id', $user->id)->firstOrFail();
         $job = Job::where('id', $jobId)->where('enterprise_id', $enterprise->id)->firstOrFail();
 
-        $applications = Application::with('student.user:id,name,phone,email')
+        $applications = Application::with(['student.user:id,name,phone,email', 'interview'])
             ->where('job_id', $job->id)
             ->orderBy('created_at', 'desc')
             ->paginate(15);

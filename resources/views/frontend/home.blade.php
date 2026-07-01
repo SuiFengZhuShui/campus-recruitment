@@ -1,18 +1,21 @@
 @extends('frontend.layout')
 
-@section('title', '岗位搜索 - 校园招聘平台')
+@section('title', '岗位搜索 - ' . config('school.short_name'))
 
 @section('content')
-<div style="background:linear-gradient(135deg,#1e40af,#3b82f6);padding:40px 24px;color:#fff;">
+<div class="hero">
     <div class="container">
-        <h1 style="font-size:24px;margin-bottom:8px;">找一份好工作</h1>
-        <p style="font-size:14px;color:#bfdbfe;">搜索校园招聘岗位，一键投递</p>
-        <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
-            <input id="searchKeyword" type="text" placeholder="岗位名称/技能关键词" style="flex:1;min-width:200px;padding:10px 14px;border:none;border-radius:8px;font-size:15px;">
-            <select id="searchCity" style="padding:10px 14px;border:none;border-radius:8px;font-size:14px;min-width:120px;">
+        <h1>找一份好工作</h1>
+        <p>搜索校园招聘岗位，一键投递</p>
+        <div class="hero-search">
+            <div style="position:relative;flex:1;min-width:200px;">
+                <input id="searchKeyword" type="text" placeholder="岗位名称/技能关键词" style="width:100%;padding-right:32px;" oninput="toggleClearBtn()" onkeydown="if(event.key==='Enter')searchJobs()">
+                <button id="clearSearch" onclick="clearSearch()" title="清空" class="input-clear-btn">×</button>
+            </div>
+            <select id="searchCity" onchange="searchJobs()">
                 <option value="">全部城市</option>
             </select>
-            <select id="searchType" style="padding:10px 14px;border:none;border-radius:8px;font-size:14px;">
+            <select id="searchType" onchange="searchJobs()">
                 <option value="">全部类型</option>
                 <option value="full-time">全职</option>
                 <option value="internship">实习</option>
@@ -22,17 +25,51 @@
     </div>
 </div>
 
-<div class="container" style="margin-top:24px;">
-    <div id="jobList"></div>
-    <div id="pagination" style="text-align:center;margin-top:20px;"></div>
+@if (auth()->check() && auth()->user()->isStudent())
+    <div class="container" style="margin-top:12px;">
+        <div class="student-notice-bar" style="background:linear-gradient(135deg,#fef3c7,#fde68a);color:#92400e;padding:10px 20px;border-radius:8px;text-align:center;font-size:14px;font-weight:500;overflow:hidden;white-space:nowrap;">
+            <span style="display:inline-block;animation:scrollLeft 16s linear infinite;">📢 温馨提示：先上传简历，上传简历后点击投递企业才能看到你的简历！为你的求职之路做好准备吧！</span>
+        </div>
+    </div>
+    <style>
+    @keyframes scrollLeft {
+        0% { transform: translateX(60%); }
+        100% { transform: translateX(-60%); }
+    }
+    </style>
+@endif
+
+<div class="container mt-2xl">
+    <div id="jobList" class="job-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+        <div class="job-skeleton" style="height:140px;background:#f1f5f9;border-radius:10px;animation:pulse 1.2s ease-in-out infinite;"></div>
+        <div class="job-skeleton" style="height:140px;background:#f1f5f9;border-radius:10px;animation:pulse 1.2s ease-in-out infinite .2s;"></div>
+        <div class="job-skeleton" style="height:140px;background:#f1f5f9;border-radius:10px;animation:pulse 1.2s ease-in-out infinite .4s;"></div>
+    </div>
+    <div id="pagination" class="text-center mt-xl"></div>
 </div>
+<style>
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+</style>
 
 <script>
 const API = '/api';
 
+function toggleClearBtn() {
+    const btn = document.getElementById('clearSearch');
+    btn.classList.toggle('visible', document.getElementById('searchKeyword').value.trim());
+}
+
+function clearSearch() {
+    document.getElementById('searchKeyword').value = '';
+    document.getElementById('clearSearch').classList.remove('visible');
+    document.getElementById('searchCity').value = '';
+    document.getElementById('searchType').value = '';
+    searchJobs();
+}
+
 async function loadCities() {
     try {
-        const r = await fetch(API + '/jobs/cities');
+        const r = await fetch(API + '/jobs/cities', {headers:{'Accept':'application/json'}});
         const data = await r.json();
         const sel = document.getElementById('searchCity');
         (data.data || []).forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
@@ -50,48 +87,51 @@ async function searchJobs(page = 1) {
     params.set('page', page);
 
     try {
-        const r = await fetch(API + '/jobs?' + params);
+        const r = await fetch(API + '/jobs?' + params, {headers:{'Accept':'application/json'}});
         const d = await r.json();
         const list = d.data.list || [];
         const meta = d.data.meta || {};
 
         const container = document.getElementById('jobList');
         if (!list.length) {
-            container.innerHTML = '<div class="card" style="text-align:center;padding:60px;color:#94a3b8;">暂无匹配岗位</div>';
+            container.style.display = 'block';
+            container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">暂无匹配岗位</div>';
         } else {
+            container.style.display = 'grid';
             container.innerHTML = list.map(j => `
-                <div class="card" style="display:flex;justify-content:space-between;align-items:flex-start;">
-                    <div style="flex:1;">
-                        <a href="/jobs/${j.id}" style="font-size:17px;font-weight:600;color:#1e293b;text-decoration:none;">${j.title}</a>
-                        <div style="margin-top:8px;font-size:14px;color:#475569;">
-                            <span class="tag tag-green">${j.enterprise?.name || ''}</span>
-                            <span class="tag tag-gray" style="margin-left:8px;">${j.city}</span>
-                            <span class="tag tag-blue" style="margin-left:8px;">${j.education}</span>
-                            <span class="tag tag-yellow" style="margin-left:8px;">${j.type === 'full-time' ? '全职' : '实习'}</span>
+                <a href="/jobs/${j.id}" class="card job-card" style="display:block;text-decoration:none;color:inherit;">
+                    <div class="flex-between-start">
+                        <div style="flex:1;min-width:0;">
+                            <div class="job-card-title">${j.title}</div>
+                            <div class="job-card-meta">
+                                <span class="tag tag-green">${j.enterprise?.name || ''}</span>
+                                <span class="tag tag-gray">${j.city}</span>
+                                <span class="tag tag-blue">${j.education}</span>
+                                <span class="tag tag-yellow">${j.type === 'full-time' ? '全职' : '实习'}</span>
+                            </div>
+                            <div class="job-card-meta">${(j.skills || '').split(',').filter(Boolean).map(s => `<span class="tag tag-gray">${s.trim()}</span>`).join('')}</div>
                         </div>
-                        <div style="margin-top:8px;font-size:14px;color:#94a3b8;">${(j.skills || '').split(',').filter(Boolean).map(s => `<span class="tag tag-gray" style="margin-right:4px;">${s.trim()}</span>`).join('')}</div>
+                        <div class="text-right" style="flex-shrink:0;">
+                            <div class="text-xl font-bold text-danger">${j.salary_min / 1000}k-${j.salary_max / 1000}k<span class="text-xs text-light" style="font-weight:400;"> /月</span></div>
+                        </div>
                     </div>
-                    <div style="text-align:right;">
-                        <div style="font-size:18px;font-weight:700;color:#ef4444;">${j.salary_min / 1000}k-${j.salary_max / 1000}k</div>
-                        <div style="font-size:12px;color:#94a3b8;margin-top:4px;">/ 月</div>
-                    </div>
-                </div>
+                </a>
             `).join('');
         }
 
-        // Pagination
         const pg = document.getElementById('pagination');
         if (meta.last_page > 1) {
-            let html = '';
+            let html = '<div class="pagination">';
             for (let i = 1; i <= meta.last_page; i++) {
-                html += `<button onclick="searchJobs(${i})" style="padding:6px 14px;border:1px solid ${i===page?'#3b82f6':'#e2e8f0'};background:${i===page?'#3b82f6':'#fff'};color:${i===page?'#fff':'#475569'};border-radius:6px;margin:0 4px;cursor:pointer;font-size:13px;">${i}</button>`;
+                html += `<button onclick="searchJobs(${i})" class="pagination-btn${i === page ? ' active' : ''}" type="button">${i}</button>`;
             }
+            html += '</div>';
             pg.innerHTML = html;
         } else {
             pg.innerHTML = '';
         }
     } catch(e) {
-        document.getElementById('jobList').innerHTML = '<div class="card" style="text-align:center;padding:60px;color:#ef4444;">加载失败</div>';
+        document.getElementById('jobList').innerHTML = '<div class="card empty-state-card text-danger">加载失败</div>';
     }
 }
 

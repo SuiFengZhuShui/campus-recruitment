@@ -24,8 +24,8 @@ class AuthController extends Controller
             'student_no' => 'required|string|max:30|unique:students,student_no',
             'class_name' => 'required|string|max:100',
             'name' => 'required|string|max:50',
-            'phone' => 'required|string|max:20|unique:users,phone',
-            'password' => 'required|string|min:6|max:50',
+            'phone' => 'required|string|min:11|max:11|regex:/^1[3-9]\d{9}$/|unique:users,phone',
+            'password' => 'required|string|min:6|max:50|confirmed',
         ]);
 
         $user = User::create([
@@ -45,7 +45,7 @@ class AuthController extends Controller
             'user_id' => $user->id,
             'student_no' => $data['student_no'],
             'class_name' => $data['class_name'],
-            'grade' => substr($data['student_no'], 0, 4),
+            'grade' => substr(preg_replace('/[^0-9]/', '', $data['student_no']), 0, 4),
             'college_id' => $collegeId,
         ]);
 
@@ -71,10 +71,10 @@ class AuthController extends Controller
             'scale' => 'nullable|string|max:30',
             'intro' => 'nullable|string',
             'contact_name' => 'required|string|max:30',
-            'contact_phone' => 'required|string|max:20',
+            'contact_phone' => 'required|string|min:11|max:11|regex:/^1[3-9]\d{9}$/',
             'email' => 'required|email|max:100|unique:users,email',
-            'phone' => 'required|string|max:20|unique:users,phone',
-            'password' => 'required|string|min:6|max:50',
+            'phone' => 'required|string|min:11|max:11|regex:/^1[3-9]\d{9}$/|unique:users,phone',
+            'password' => 'required|string|min:6|max:50|confirmed',
             'doc_license' => 'required|file|mimes:png,jpg,jpeg,pdf|max:5120',
             'doc_id_card' => 'required|file|mimes:png,jpg,jpeg,pdf|max:5120',
             'doc_authorization' => 'required|file|mimes:png,jpg,jpeg,pdf|max:5120',
@@ -144,6 +144,9 @@ class AuthController extends Controller
         $user = User::where('phone', $account)
             ->orWhere('username', $account)
             ->orWhere('email', $account)
+            ->orWhereHas('student', function ($q) use ($account) {
+                $q->where('student_no', $account);
+            })
             ->first();
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
@@ -171,8 +174,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $data['email'])->first();
         if (!$user) {
-            // Don't reveal whether email exists
-            return response()->json(['code' => 200, 'message' => '如果该邮箱已注册，重置链接已发送', 'data' => null]);
+            return response()->json(['code' => 422, 'message' => '邮箱未注册', 'data' => ['email_not_found' => true]]);
         }
 
         // Generate token
@@ -288,17 +290,24 @@ class AuthController extends Controller
 
     private function respond(User $user, string $message = 'success'): \Illuminate\Http\JsonResponse
     {
+        $data = [
+            'id' => $user->id,
+            'role' => $user->role,
+            'username' => $user->username,
+            'name' => $user->name,
+            'phone' => $user->phone,
+            'email' => $user->email,
+        ];
+
+        if ($user->isEnterprise()) {
+            $enterprise = Enterprise::where('user_id', $user->id)->first();
+            $data['enterprise_status'] = $enterprise ? $enterprise->status : null;
+        }
+
         return response()->json([
             'code' => 200,
             'message' => $message,
-            'data' => [
-                'id' => $user->id,
-                'role' => $user->role,
-                'username' => $user->username,
-                'name' => $user->name,
-                'phone' => $user->phone,
-                'email' => $user->email,
-            ],
+            'data' => $data,
         ]);
     }
 }

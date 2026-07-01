@@ -3,33 +3,34 @@
 @section('title', '登录')
 
 @section('content')
-<div class="container" style="max-width:420px;margin-top:60px;">
+<div class="auth-container">
+    <a href="/" class="btn-back mb-lg">&larr; 返回首页</a>
     <div class="card" style="padding:32px;">
-        <h2 style="text-align:center;margin-bottom:24px;">用户登录</h2>
-        <div id="flash" style="display:none;"></div>
+        <h2 class="auth-title">用户登录</h2>
+        <div id="flash" class="hidden"></div>
         <form id="loginForm" onsubmit="doLogin(event)">
             @csrf
-            <div style="margin-bottom:16px;">
-                <label style="display:block;font-size:14px;color:#475569;margin-bottom:4px;">手机号 / 用户名 / 邮箱</label>
-                <input type="text" name="account" id="account" required style="width:100%;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;" placeholder="请输入">
+            <div class="form-group">
+                <label class="form-label">手机号 / 用户名 / 邮箱</label>
+                <input type="text" name="account" id="account" required class="form-input form-input-lg" placeholder="请输入">
             </div>
-            <div style="margin-bottom:16px;">
-                <label style="display:block;font-size:14px;color:#475569;margin-bottom:4px;">密码</label>
-                <input type="password" name="password" required style="width:100%;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;" placeholder="请输入密码">
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <input type="password" name="password" required class="form-input form-input-lg" placeholder="请输入密码">
             </div>
-            <div style="margin-bottom:16px;">
-                <label style="display:block;font-size:14px;color:#475569;margin-bottom:4px;">验证码</label>
-                <div style="display:flex;gap:8px;">
-                    <input type="text" name="captcha" required maxlength="4" style="flex:1;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;" placeholder="4位验证码">
+            <div class="form-group">
+                <label class="form-label">验证码</label>
+                <div class="flex gap-sm">
+                    <input type="text" name="captcha" required maxlength="4" class="form-input form-input-lg" style="flex:1;" placeholder="4位验证码">
                     <img id="captchaImg" src="/api/auth/captcha" onclick="this.src='/api/auth/captcha?'+Date.now()" style="height:42px;cursor:pointer;border-radius:8px;" title="点击刷新">
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;font-size:16px;justify-content:center;">登 录</button>
+            <button type="submit" class="btn btn-primary w-full" style="padding:12px;font-size:16px;justify-content:center;">登 录</button>
         </form>
-        <div style="text-align:center;margin-top:16px;font-size:14px;color:#64748b;">
-            没有账号？<a href="/register" style="color:#3b82f6;">立即注册</a>
+        <div class="auth-link">
+            没有账号？<a href="/register">立即注册</a>
             <span style="margin:0 8px;">|</span>
-            <a href="/forgot-password" style="color:#3b82f6;">忘记密码</a>
+            <a href="/forgot-password">忘记密码</a>
         </div>
     </div>
 </div>
@@ -40,13 +41,19 @@ async function doLogin(e) {
     clearErrors();
     const fd = new FormData(e.target);
     try {
-        const r = await fetch('/api/auth/login', { method:'POST', body:fd, headers:{'X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content} });
+        const r = await fetch('/api/auth/login', { method:'POST', body:fd, headers:{'Accept':'application/json','X-Requested-With':'XMLHttpRequest','X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content} });
         const d = await r.json();
         if (d.code === 200) {
             const role = d.data.role;
-            if (role === 'enterprise') location.href = '/enterprise/jobs';
-            else if (role === 'student') location.href = '/';
-            else location.href = '/';
+            if (role === 'enterprise') {
+                location.href = d.data.enterprise_status === 'approved' ? '/enterprise/dashboard' : '/enterprise/waiting';
+            } else if (role === 'school' || role === 'college') {
+                location.href = '/admin';
+            } else if (role === 'student') {
+                location.href = '/';
+            } else {
+                location.href = '/';
+            }
         } else {
             if (d.errors) showFieldErrors(d.errors);
             else showFlash(d.message || '登录失败', 'error');
@@ -71,9 +78,14 @@ function showFieldErrors(errors) {
             input.style.borderColor = '#ef4444';
             const err = document.createElement('div');
             err.className = 'field-error';
-            err.style.cssText = 'color:#ef4444;font-size:12px;margin-top:2px;';
+            err.style.cssText = 'color:#ef4444;font-size:12px;margin-top:4px;';
             err.textContent = msgs.join(', ');
-            input.parentNode.appendChild(err);
+            // captcha: append to form-group so it sits below the img, not in flex row
+            if (field === 'captcha') {
+                input.closest('.form-group').appendChild(err);
+            } else {
+                input.parentNode.appendChild(err);
+            }
         } else {
             showFlash(msgs.join(', '), 'error');
         }

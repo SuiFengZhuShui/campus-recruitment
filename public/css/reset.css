@@ -1,0 +1,23 @@
+/* ===== Reset & Base ===== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+}
+
+a {
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+}

@@ -33,13 +33,15 @@ class CollegeAdminTest extends TestCase
     {
         session(['captcha_code' => 'abcd']);
 
-        $response = $this->post('/admin/login', [
-            'username' => 'college_a',
+        $response = $this->postJson('/api/auth/login', [
+            'account' => 'college_a',
             'password' => 'password',
             'captcha' => 'abcd',
         ]);
 
-        $response->assertRedirect('/admin');
+        $response->assertStatus(200)
+            ->assertJson(['code' => 200])
+            ->assertJsonPath('data.role', 'college');
     }
 
     public function test_college_admin_can_access_dashboard()

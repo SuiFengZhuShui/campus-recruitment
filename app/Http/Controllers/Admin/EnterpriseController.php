@@ -14,14 +14,35 @@ class EnterpriseController extends Controller
 {
     public function index(Request $request)
     {
-        $status = $request->query('status', 'pending');
+        $status = $request->query('status', 'all');
+        $search = $request->query('search');
 
-        $enterprises = Enterprise::with('user', 'docs', 'college')
-            ->where('status', $status)
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $query = Enterprise::with('user', 'docs', 'college')
+            ->orderBy('created_at', 'desc');
 
-        return view('admin.enterprises.index', compact('enterprises', 'status'));
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('contact_name', 'like', "%{$search}%")
+                  ->orWhere('contact_phone', 'like', "%{$search}%")
+                  ->orWhere('industry', 'like', "%{$search}%");
+            });
+        }
+
+        $enterprises = $query->paginate(15);
+
+        if ($status !== 'all') {
+            $enterprises->appends(['status' => $status]);
+        }
+        if ($search) {
+            $enterprises->appends(['search' => $search]);
+        }
+
+        return view('admin.enterprises.index', compact('enterprises', 'status', 'search'));
     }
 
     public function show($id)
@@ -122,5 +143,67 @@ class EnterpriseController extends Controller
         EnterpriseDoc::where('enterprise_id', $id)->where('status', 'pending')->update(['status' => 'approved']);
 
         return back()->with('success', '已通过全部资质文件');
+    }
+
+    public function viewDoc($docId)
+    {
+        $doc = EnterpriseDoc::findOrFail($docId);
+        $path = storage_path('app/' . $doc->file_path);
+        if (!file_exists($path)) {
+            abort(404, '文件不存在');
+        }
+        return response()->file($path);
+    }
+
+    public function edit($id)
+    {
+        $enterprise = Enterprise::with('user')->findOrFail($id);
+        $colleges = College::orderBy('name')->get();
+        return view('admin.enterprises.edit', compact('enterprise', 'colleges'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $enterprise = Enterprise::findOrFail($id);
+
+        $data = $request->validate([
+            'name' => 'required|string|max:200',
+            'contact_name' => 'required|string|max:30',
+            'contact_phone' => 'required|string|max:11',
+            'industry' => 'required|string|max:50',
+            'scale' => 'nullable|string|max:30',
+            'intro' => 'nullable|string|max:500',
+            'credit_code' => 'required|string|max:50',
+            'college_id' => 'nullable|exists:colleges,id',
+            'status' => 'required|in:pending,approved,rejected',
+        ]);
+
+        $enterprise->fill($data)->save();
+
+        return redirect()->route('admin.enterprises', ['status' => $request->query('status', 'all')])
+            ->with('success', '已更新「' . $enterprise->name . '」');
+    }
+
+    public function destroy($id)
+    {
+        $enterprise = Enterprise::findOrFail($id);
+        $name = $enterprise->name;
+
+        // Delete associated docs files
+        foreach ($enterprise->docs as $doc) {
+            if (\Storage::exists($doc->file_path)) {
+                \Storage::delete($doc->file_path);
+            }
+            $doc->delete();
+        }
+
+        // Delete associated user
+        if ($enterprise->user) {
+            $enterprise->user->delete();
+        }
+
+        $enterprise->delete();
+
+        return back()->with('success', '已删除「' . $name . '」');
     }
 }

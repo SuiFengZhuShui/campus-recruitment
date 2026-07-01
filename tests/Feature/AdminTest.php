@@ -17,20 +17,22 @@ class AdminTest extends TestCase
         return User::create(['role' => 'school', 'username' => 'admin', 'name' => '管理员', 'phone' => '13800000900', 'password' => Hash::make('password'), 'status' => 'active']);
     }
 
-    // === Admin Login ===
+    // === Admin Login (unified /api/auth/login) ===
 
     public function test_admin_login_success()
     {
         $this->createAdminUser();
         session(['captcha_code' => 'abcd']);
 
-        $response = $this->post('/admin/login', [
-            'username' => 'admin',
+        $response = $this->postJson('/api/auth/login', [
+            'account' => 'admin',
             'password' => 'password',
             'captcha' => 'abcd',
         ]);
 
-        $response->assertRedirect('/admin');
+        $response->assertStatus(200)
+            ->assertJson(['code' => 200])
+            ->assertJsonPath('data.role', 'school');
     }
 
     public function test_admin_login_wrong_password()
@@ -38,13 +40,13 @@ class AdminTest extends TestCase
         $this->createAdminUser();
         session(['captcha_code' => 'abcd']);
 
-        $response = $this->post('/admin/login', [
-            'username' => 'admin',
+        $response = $this->postJson('/api/auth/login', [
+            'account' => 'admin',
             'password' => 'wrongpass',
             'captcha' => 'abcd',
         ]);
 
-        $response->assertSessionHasErrors();
+        $response->assertStatus(422);
     }
 
     public function test_admin_login_non_school_user()
@@ -52,20 +54,23 @@ class AdminTest extends TestCase
         User::create(['role' => 'student', 'username' => 'student1', 'name' => '学生', 'phone' => '13800000901', 'password' => Hash::make('password'), 'status' => 'active']);
         session(['captcha_code' => 'abcd']);
 
-        $response = $this->post('/admin/login', [
-            'username' => 'student1',
+        // Student can also login — this test verifies the login endpoint works
+        $response = $this->postJson('/api/auth/login', [
+            'account' => 'student1',
             'password' => 'password',
             'captcha' => 'abcd',
         ]);
 
-        $response->assertSessionHasErrors();
+        $response->assertStatus(200)
+            ->assertJson(['code' => 200])
+            ->assertJsonPath('data.role', 'student');
     }
 
     public function test_admin_dashboard_requires_auth()
     {
         $response = $this->get('/admin');
 
-        $response->assertRedirect('/admin/login');
+        $response->assertRedirect('/login');
     }
 
     public function test_admin_dashboard_authenticated()

@@ -11,16 +11,58 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $role = $request->query('role');
+        $search = $request->query('search');
 
-        $query = User::with('enterprise:id,user_id,name')->orderBy('created_at', 'desc');
+        $query = User::with('enterprise:id,user_id,name')->orderBy('id', 'asc');
 
-        if ($role && in_array($role, ['school', 'enterprise', 'student'])) {
+        if ($role === 'school') {
+            $query->whereIn('role', ['school', 'college']);
+        } elseif ($role && in_array($role, ['college', 'enterprise', 'student'])) {
             $query->where('role', $role);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('username', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
         }
 
         $users = $query->paginate(15);
 
-        return view('admin.users.index', compact('users', 'role'));
+        if ($role) {
+            $users->appends(['role' => $role]);
+        }
+        if ($search) {
+            $users->appends(['search' => $search]);
+        }
+
+        return view('admin.users.index', compact('users', 'role', 'search'));
+    }
+
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.users.edit', compact('user'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $data = $request->validate([
+            'name' => 'required|string|max:50',
+            'username' => 'required|string|min:3|max:30|unique:users,username,' . $id,
+            'phone' => 'required|string|min:11|max:11|regex:/^1[3-9]\d{9}$/|unique:users,phone,' . $id,
+            'email' => 'required|email|max:100|unique:users,email,' . $id,
+            'status' => 'required|in:active,disabled',
+        ]);
+
+        $user->fill($data)->save();
+
+        return redirect()->route('admin.users')->with('success', '「' . $user->name . '」已更新');
     }
 
     public function toggle($id)

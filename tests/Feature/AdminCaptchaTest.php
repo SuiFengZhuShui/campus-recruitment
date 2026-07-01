@@ -17,12 +17,12 @@ class AdminCaptchaTest extends TestCase
     {
         $this->createAdmin();
 
-        $response = $this->post('/admin/login', [
-            'username' => 'admin_c',
+        $response = $this->postJson('/api/auth/login', [
+            'account' => 'admin_c',
             'password' => 'password',
         ]);
 
-        $response->assertSessionHasErrors();
+        $response->assertStatus(422);
     }
 
     public function test_admin_login_fails_with_wrong_captcha()
@@ -30,13 +30,13 @@ class AdminCaptchaTest extends TestCase
         $this->createAdmin();
         session(['captcha_code' => 'abcd']);
 
-        $response = $this->post('/admin/login', [
-            'username' => 'admin_c',
+        $response = $this->postJson('/api/auth/login', [
+            'account' => 'admin_c',
             'password' => 'password',
             'captcha' => 'wrong',
         ]);
 
-        $response->assertSessionHasErrors();
+        $response->assertStatus(422);
     }
 
     public function test_admin_login_succeeds_with_correct_captcha()
@@ -44,12 +44,14 @@ class AdminCaptchaTest extends TestCase
         $this->createAdmin();
         session(['captcha_code' => 'abcd']);
 
-        $response = $this->post('/admin/login', [
-            'username' => 'admin_c',
+        $response = $this->postJson('/api/auth/login', [
+            'account' => 'admin_c',
             'password' => 'password',
             'captcha' => 'abcd',
         ]);
 
-        $response->assertRedirect('/admin');
+        $response->assertStatus(200)
+            ->assertJson(['code' => 200])
+            ->assertJsonPath('data.role', 'school');
     }
 }

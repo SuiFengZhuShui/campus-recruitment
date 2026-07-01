@@ -3,20 +3,20 @@
 @section('title', '忘记密码')
 
 @section('content')
-<div class="container" style="max-width:420px;margin-top:60px;">
+<div class="auth-container">
     <div class="card" style="padding:32px;">
-        <h2 style="text-align:center;margin-bottom:24px;">忘记密码</h2>
-        <div id="flash" style="display:none;"></div>
+        <h2 class="auth-title">忘记密码</h2>
+        <div id="flash" class="hidden"></div>
         <form id="forgotForm" onsubmit="doForgot(event)">
             @csrf
-            <div style="margin-bottom:16px;">
-                <label style="display:block;font-size:14px;color:#475569;margin-bottom:4px;">注册邮箱</label>
-                <input type="email" name="email" required style="width:100%;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;" placeholder="请输入注册时使用的邮箱">
+            <div class="form-group">
+                <label class="form-label">注册邮箱</label>
+                <input type="email" name="email" required class="form-input form-input-lg" placeholder="请输入注册时使用的邮箱">
             </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;font-size:16px;justify-content:center;">发送重置链接</button>
+            <button type="submit" class="btn btn-primary w-full" style="padding:12px;font-size:16px;justify-content:center;">发送重置链接</button>
         </form>
-        <div style="text-align:center;margin-top:16px;font-size:14px;color:#64748b;">
-            <a href="/login" style="color:#3b82f6;">&larr; 返回登录</a>
+        <div class="auth-link">
+            <a href="/login">&larr; 返回登录</a>
         </div>
     </div>
 </div>
@@ -29,14 +29,19 @@ async function doForgot(e) {
     try {
         const r = await fetch('/api/auth/forgot-password', {
             method:'POST', body:fd,
-            headers:{'X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content}
+            headers:{'Accept':'application/json','X-Requested-With':'XMLHttpRequest','X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content}
         });
         const d = await r.json();
         el.style.display = 'block';
-        el.className = 'flash flash-' + (d.code === 200 ? 'success' : 'error');
-        el.textContent = d.message;
         if (d.code === 200) {
-            el.innerHTML += '<br><a href="/reset-password" style="color:#3b82f6;font-size:13px;">前往重置密码页面</a>';
+            el.className = 'flash flash-success';
+            el.innerHTML = d.message + '<br><a href="/reset-password" class="text-primary text-sm">前往重置密码页面</a>';
+        } else if (d.data && d.data.email_not_found) {
+            el.className = 'flash flash-error';
+            el.innerHTML = '邮箱未注册，<a href="/register" class="text-primary">前往注册</a>';
+        } else {
+            el.className = 'flash flash-error';
+            el.textContent = d.message;
         }
     } catch(err) {
         el.style.display = 'block';

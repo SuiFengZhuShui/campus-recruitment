@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\ApplicationController;
+use App\Http\Controllers\Api\EnterpriseController as ApiEnterpriseController;
+use App\Http\Controllers\Api\EnterpriseManageController;
 use App\Http\Controllers\Api\StudentController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +59,11 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('jobs/cities', [JobController::class, 'cities']);
     Route::get('jobs/{id}', [JobController::class, 'show']);
 
+    // Enterprises — public
+    Route::get('enterprises', [ApiEnterpriseController::class, 'index']);
+    Route::get('enterprises/industries', [ApiEnterpriseController::class, 'industries']);
+    Route::get('enterprises/{id}', [ApiEnterpriseController::class, 'show']);
+
     // Jobs — enterprise
     Route::middleware('auth')->group(function () {
         Route::get('my/jobs', [JobController::class, 'myJobs']);
@@ -64,5 +71,13 @@ Route::group(['middleware' => ['web']], function () {
         Route::put('my/jobs/{id}', [JobController::class, 'update']);
         Route::delete('my/jobs/{id}', [JobController::class, 'destroy']);
         Route::post('my/jobs/{id}/toggle', [JobController::class, 'toggle']);
+
+        // Enterprise self-service
+        Route::get('my/enterprise', [EnterpriseManageController::class, 'profile']);
+        Route::put('my/enterprise', [EnterpriseManageController::class, 'updateProfile']);
+        Route::put('my/password', [EnterpriseManageController::class, 'updatePassword']);
+        Route::post('my/docs', [EnterpriseManageController::class, 'uploadDoc']);
+        Route::delete('my/docs/{id}', [EnterpriseManageController::class, 'deleteDoc']);
+        Route::get('my/resumes', [EnterpriseManageController::class, 'resumes']);
     });
 });

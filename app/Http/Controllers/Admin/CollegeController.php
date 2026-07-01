@@ -11,18 +11,20 @@ class CollegeController extends Controller
 {
     public function index()
     {
-        $colleges = College::with('school')->orderBy('name')->paginate(15);
-        $schools = School::orderBy('name')->get();
+        $colleges = College::orderBy('name')->paginate(15);
 
-        return view('admin.colleges.index', compact('colleges', 'schools'));
+        return view('admin.colleges.index', compact('colleges'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'school_id' => 'required|exists:schools,id',
             'name' => 'required|string|max:100',
         ]);
+
+        // Auto-set to the only school
+        $school = School::first();
+        $data['school_id'] = $school ? $school->id : null;
 
         College::create($data);
 
@@ -34,7 +36,6 @@ class CollegeController extends Controller
         $college = College::findOrFail($id);
 
         $data = $request->validate([
-            'school_id' => 'exists:schools,id',
             'name' => 'string|max:100',
         ]);
 

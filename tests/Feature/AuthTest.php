@@ -134,6 +134,7 @@ class AuthTest extends TestCase
             'name' => '张三',
             'phone' => '13800000010',
             'password' => 'password123',
+            'password_confirmation' => 'password123',
             'captcha' => 'abcd',
         ]);
 

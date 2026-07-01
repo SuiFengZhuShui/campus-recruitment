@@ -1,37 +1,43 @@
 @extends('layouts.admin')
 
-@section('title', '学院首页')
+@section('title', $isCollegeScoped ? '学院首页' : '学校管理')
 
 @section('content')
-<h1 style="font-size:20px;font-weight:600;margin-bottom:24px;">学院管理 — {{ auth()->user()->college->name ?? '未分配学院' }}</h1>
+<h1 class="page-title">
+    @if($isCollegeScoped)
+        学院管理 — {{ auth()->user()->college->name ?? '' }}
+    @else
+        学校管理 — 全部学院
+    @endif
+</h1>
 
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
-    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
-        <div style="font-size:12px;color:#64748b;margin-bottom:4px;">本院学生</div>
-        <a href="{{ url('admin/college/students') }}" style="text-decoration:none;color:inherit;"><div style="font-size:28px;font-weight:700;color:#1e293b;">{{ $studentCount }}</div></a>
+<div class="dash-stats" style="grid-template-columns:repeat(3,1fr);">
+    <div class="stat-card">
+        <div class="stat-label">{{ $isCollegeScoped ? '本院学生' : '全部学生' }}</div>
+        <a href="{{ url('admin/college/students') }}" class="stat-value text-heading" style="text-decoration:none;font-size:28px;display:block;">{{ $studentCount }}</a>
     </div>
-    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
-        <div style="font-size:12px;color:#64748b;margin-bottom:4px;">对接企业</div>
-        <a href="{{ url('admin/college/enterprises') }}" style="text-decoration:none;color:inherit;"><div style="font-size:28px;font-weight:700;color:#1e293b;">{{ $enterpriseCount }}</div></a>
+    <div class="stat-card">
+        <div class="stat-label">{{ $isCollegeScoped ? '对接企业' : '全部企业' }}</div>
+        <a href="{{ url('admin/college/enterprises') }}" class="stat-value text-heading" style="text-decoration:none;font-size:28px;display:block;">{{ $enterpriseCount }}</a>
     </div>
-    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
-        <div style="font-size:12px;color:#64748b;margin-bottom:4px;">在招岗位</div>
-        <div style="font-size:28px;font-weight:700;color:#1e293b;">{{ $jobCount }}</div>
+    <div class="stat-card">
+        <div class="stat-label">{{ $isCollegeScoped ? '本院岗位' : '在招岗位' }}</div>
+        <div class="stat-value" style="font-size:28px;">{{ $jobCount }}</div>
     </div>
 </div>
 
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
-    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
-        <div style="font-size:12px;color:#64748b;margin-bottom:4px;">投递总数</div>
-        <div style="font-size:24px;font-weight:700;color:#3b82f6;">{{ $applicationCount }}</div>
+<div class="grid-4" style="grid-template-columns:repeat(3,1fr);">
+    <div class="stat-card">
+        <div class="stat-label">投递总数</div>
+        <div class="stat-value text-primary" style="font-size:24px;">{{ $applicationCount }}</div>
     </div>
-    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
-        <div style="font-size:12px;color:#64748b;margin-bottom:4px;">面试总数</div>
-        <div style="font-size:24px;font-weight:700;color:#7c3aed;">{{ $interviewCount }}</div>
+    <div class="stat-card">
+        <div class="stat-label">面试总数</div>
+        <div class="stat-value" style="font-size:24px;color:#7c3aed;">{{ $interviewCount }}</div>
     </div>
-    <div style="background:#fff;padding:20px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);">
-        <div style="font-size:12px;color:#64748b;margin-bottom:4px;">录用总数</div>
-        <div style="font-size:24px;font-weight:700;color:#065f46;">{{ $offerCount }}</div>
+    <div class="stat-card">
+        <div class="stat-label">录用总数</div>
+        <div class="stat-value text-success-dark" style="font-size:24px;">{{ $offerCount }}</div>
     </div>
 </div>
 @endsection
