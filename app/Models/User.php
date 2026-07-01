@@ -46,6 +46,11 @@ class User extends Authenticatable
         return $this->role === 'student';
     }
 
+    public function college()
+    {
+        return $this->belongsTo(\App\Models\College::class);
+    }
+
     public function enterprise()
     {
         return $this->hasOne(\App\Models\Enterprise::class);

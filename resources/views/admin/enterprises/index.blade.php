@@ -1,60 +1,91 @@
 @extends('layouts.admin')
 
-@section('title', '企业审核')
+@section('title', '企业管理')
 
 @section('content')
 <div class="page-header">
-    <h1>企业审核</h1>
+    <h1>企业管理</h1>
 </div>
 
-<div style="display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid #e2e8f0;">
-    <a href="?status=pending" style="padding:10px 24px;text-decoration:none;font-size:14px;font-weight:500;color:{{ $status === 'pending' ? '#3b82f6' : '#64748b' }};border-bottom:2px solid {{ $status === 'pending' ? '#3b82f6' : 'transparent' }};margin-bottom:-2px;">待审核</a>
-    <a href="?status=approved" style="padding:10px 24px;text-decoration:none;font-size:14px;font-weight:500;color:{{ $status === 'approved' ? '#3b82f6' : '#64748b' }};border-bottom:2px solid {{ $status === 'approved' ? '#3b82f6' : 'transparent' }};margin-bottom:-2px;">已通过</a>
-    <a href="?status=rejected" style="padding:10px 24px;text-decoration:none;font-size:14px;font-weight:500;color:{{ $status === 'rejected' ? '#3b82f6' : '#64748b' }};border-bottom:2px solid {{ $status === 'rejected' ? '#3b82f6' : 'transparent' }};margin-bottom:-2px;">已驳回</a>
+<div class="tabs">
+    <a href="?status=all{{ $search ? '&search=' . $search : '' }}" class="tab {{ $status === 'all' ? 'active' : '' }}">全部</a>
+    <a href="?status=pending{{ $search ? '&search=' . $search : '' }}" class="tab {{ $status === 'pending' ? 'active' : '' }}">待审核</a>
+    <a href="?status=approved{{ $search ? '&search=' . $search : '' }}" class="tab {{ $status === 'approved' ? 'active' : '' }}">已通过</a>
+    <a href="?status=rejected{{ $search ? '&search=' . $search : '' }}" class="tab {{ $status === 'rejected' ? 'active' : '' }}">已驳回</a>
 </div>
 
 @if (session('success'))
-    <div style="background:#f0fdf4;color:#166534;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:14px;">{{ session('success') }}</div>
+    <div class="flash flash-success">{{ session('success') }}</div>
 @endif
 @if (session('error'))
-    <div style="background:#fef2f2;color:#991b1b;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:14px;">{{ session('error') }}</div>
+    <div class="flash flash-error">{{ session('error') }}</div>
 @endif
 
+<form class="flex gap-sm mb-lg" style="max-width:400px;">
+    <input type="hidden" name="status" value="{{ $status }}">
+    <input type="text" name="search" value="{{ $search }}" placeholder="搜索企业名称 / 联系人 / 电话 / 行业" class="form-input" style="flex:1;height:40px;">
+    <button type="submit" class="btn btn-primary" style="height:40px;padding:0 16px;">搜索</button>
+    @if ($search)
+        <a href="?status={{ $status }}" class="btn" style="height:40px;line-height:40px;padding:0 12px;">清除</a>
+    @endif
+</form>
+
 @if ($enterprises->isEmpty())
-    <div style="text-align:center;padding:60px 0;color:#94a3b8;">暂无{{ $status === 'pending' ? '待审' : ($status === 'approved' ? '已通过' : '已驳回') }}企业</div>
+    <div class="empty-state">暂无{{ $status === 'all' ? '' : ($status === 'pending' ? '待审' : ($status === 'approved' ? '已通过' : '已驳回')) }}企业</div>
 @else
-    <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);">
-        <thead>
-            <tr style="background:#f8fafc;text-align:left;">
-                <th style="padding:14px 18px;font-size:13px;font-weight:600;color:#475569;">企业名称</th>
-                <th style="padding:14px 18px;font-size:13px;font-weight:600;color:#475569;">联系人</th>
-                <th style="padding:14px 18px;font-size:13px;font-weight:600;color:#475569;">电话</th>
-                <th style="padding:14px 18px;font-size:13px;font-weight:600;color:#475569;">行业</th>
-                <th style="padding:14px 18px;font-size:13px;font-weight:600;color:#475569;">注册时间</th>
-                @if ($status === 'rejected')
-                    <th style="padding:14px 18px;font-size:13px;font-weight:600;color:#475569;">驳回原因</th>
-                @endif
-                <th style="padding:14px 18px;font-size:13px;font-weight:600;color:#475569;">操作</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($enterprises as $enterprise)
-            <tr style="border-top:1px solid #e2e8f0;">
-                <td style="padding:14px 18px;font-size:14px;">{{ $enterprise->name }}</td>
-                <td style="padding:14px 18px;font-size:14px;">{{ $enterprise->contact_name }}</td>
-                <td style="padding:14px 18px;font-size:14px;">{{ $enterprise->contact_phone }}</td>
-                <td style="padding:14px 18px;font-size:14px;">{{ $enterprise->industry }}</td>
-                <td style="padding:14px 18px;font-size:14px;color:#64748b;">{{ $enterprise->created_at->format('Y-m-d H:i') }}</td>
-                @if ($status === 'rejected')
-                    <td style="padding:14px 18px;font-size:14px;color:#ef4444;">{{ $enterprise->audit_remark }}</td>
-                @endif
-                <td style="padding:14px 18px;">
-                    <a href="{{ url('admin/enterprises/' . $enterprise->id) }}" style="color:#3b82f6;text-decoration:none;font-size:14px;">查看详情</a>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-    <div style="margin-top:16px;">{{ $enterprises->links() }}</div>
+    <div class="table-card" style="overflow:hidden;">
+        <table class="table">
+            <thead>
+                <tr style="background:#f8fafc;">
+                    <th>企业名称</th>
+                    <th>联系人</th>
+                    <th>电话</th>
+                    <th>行业</th>
+                    @if ($status === 'all')
+                        <th>状态</th>
+                    @endif
+                    <th>注册时间</th>
+                    @if ($status === 'rejected')
+                        <th>驳回原因</th>
+                    @endif
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($enterprises as $enterprise)
+                <tr>
+                    <td>{{ $enterprise->name }}</td>
+                    <td>{{ $enterprise->contact_name }}</td>
+                    <td>{{ $enterprise->contact_phone }}</td>
+                    <td>{{ $enterprise->industry }}</td>
+                    @if ($status === 'all')
+                        <td>
+                            <span class="badge badge-sm
+                                @if($enterprise->status === 'pending') badge-pending
+                                @elseif($enterprise->status === 'approved') badge-approved
+                                @else badge-rejected
+                                @endif
+                            ">
+                                {{ $enterprise->status === 'pending' ? '待审核' : ($enterprise->status === 'approved' ? '已通过' : '已驳回') }}
+                            </span>
+                        </td>
+                    @endif
+                    <td class="text-muted">{{ $enterprise->created_at->format('Y-m-d H:i') }}</td>
+                    @if ($status === 'rejected')
+                        <td class="text-danger">{{ $enterprise->audit_remark }}</td>
+                    @endif
+                    <td>
+                        <div class="flex gap-xs" style="flex-shrink:0;white-space:nowrap;">
+                            <a href="{{ url('admin/enterprises/' . $enterprise->id . '?from=' . $status) }}" class="btn btn-xs">详情</a>
+                            <a href="{{ url('admin/enterprises/' . $enterprise->id . '/edit?status=' . $status) }}" class="btn btn-primary btn-xs">编辑</a>
+                            <form method="POST" action="{{ url('admin/enterprises/' . $enterprise->id) }}" style="display:flex;margin:0;padding:0;" onsubmit="return confirm('确定删除「{{ $enterprise->name }}」？将同时删除关联用户和资质文件。');">@csrf @method('DELETE')<button type="submit" class="btn btn-danger btn-xs">删除</button></form>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination-container">{{ $enterprises->links() }}</div>
 @endif
 @endsection

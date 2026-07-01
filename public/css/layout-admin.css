@@ -1,0 +1,95 @@
+/* ===== Admin Layout ===== */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar — 主色调深蓝渐变 */
+.sidebar {
+    width: 220px;
+    background: linear-gradient(180deg, #004d80 0%, #0068a8 50%, #0078c8 100%);
+    color: var(--color-sidebar-text);
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    padding: var(--space-lg) var(--space-xl);
+    border-bottom: 1px solid rgba(255,255,255,.15);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-logo {
+    height: 24px;
+    width: auto;
+}
+
+.sidebar-school {
+    font-size: var(--text-md);
+    color: #fff;
+    font-weight: var(--font-bold);
+    white-space: nowrap;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: var(--space-md) 0;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: var(--space-md) var(--space-xl);
+    color: var(--color-sidebar-text);
+    text-decoration: none;
+    font-size: var(--text-base);
+    transition: var(--transition-fast);
+}
+
+.sidebar-menu a:hover {
+    background: var(--color-sidebar-hover);
+    color: #fff;
+}
+
+.sidebar-menu a.active {
+    background: rgba(255,255,255,.2);
+    color: #fff;
+    font-weight: var(--font-bold);
+}
+
+/* Main area */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top header */
+.header {
+    background: var(--color-surface);
+    padding: var(--space-lg) var(--space-2xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.header-user {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+}
+
+.header-logout {
+    color: var(--color-highlight);
+    text-decoration: none;
+    font-size: var(--text-base);
+    margin-left: var(--space-lg);
+}
+
+/* Content */
+.content {
+    flex: 1;
+    padding: var(--space-2xl);
+}

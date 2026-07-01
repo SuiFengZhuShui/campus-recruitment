@@ -8,71 +8,83 @@
 </div>
 
 @if (session('success'))
-    <div style="background:#f0fdf4;color:#166534;padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:14px;">{{ session('success') }}</div>
+    <div class="flash flash-success">{{ session('success') }}</div>
 @endif
 
-<div style="display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid #e2e8f0;">
-    <a href="?" style="padding:10px 24px;text-decoration:none;font-size:14px;font-weight:500;color:{{ !request('role') ? '#3b82f6' : '#64748b' }};border-bottom:2px solid {{ !request('role') ? '#3b82f6' : 'transparent' }};margin-bottom:-2px;">全部</a>
-    <a href="?role=school" style="padding:10px 24px;text-decoration:none;font-size:14px;font-weight:500;color:{{ request('role') === 'school' ? '#3b82f6' : '#64748b' }};border-bottom:2px solid {{ request('role') === 'school' ? '#3b82f6' : 'transparent' }};margin-bottom:-2px;">学校管理员</a>
-    <a href="?role=enterprise" style="padding:10px 24px;text-decoration:none;font-size:14px;font-weight:500;color:{{ request('role') === 'enterprise' ? '#3b82f6' : '#64748b' }};border-bottom:2px solid {{ request('role') === 'enterprise' ? '#3b82f6' : 'transparent' }};margin-bottom:-2px;">企业</a>
-    <a href="?role=student" style="padding:10px 24px;text-decoration:none;font-size:14px;font-weight:500;color:{{ request('role') === 'student' ? '#3b82f6' : '#64748b' }};border-bottom:2px solid {{ request('role') === 'student' ? '#3b82f6' : 'transparent' }};margin-bottom:-2px;">学生</a>
+<form style="display:flex;gap:var(--space-md);margin-bottom:var(--space-lg);align-items:center;">
+    @if(request('role'))
+        <input type="hidden" name="role" value="{{ request('role') }}">
+    @endif
+    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="搜索姓名 / 用户名 / 手机号 / 邮箱" class="input" style="flex:1;max-width:400px;height:40px;padding:0 16px;font-size:15px;">
+    <button type="submit" class="btn btn-primary" style="height:40px;padding:0 24px;font-size:15px;">搜索</button>
+    @if(!empty($search))
+        <a href="?{{ request('role') ? 'role='.request('role') : '' }}" style="height:40px;line-height:40px;padding:0 16px;border-radius:var(--radius-md);border:1px solid var(--color-border-light);color:var(--color-text);text-decoration:none;font-size:14px;white-space:nowrap;">✕ 清除</a>
+    @endif
+</form>
+
+<div class="tabs">
+    <a href="?" class="tab {{ !request('role') ? 'active' : '' }}">全部</a>
+    <a href="?role=school" class="tab {{ request('role') === 'school' ? 'active' : '' }}">管理员</a>
+    <a href="?role=enterprise" class="tab {{ request('role') === 'enterprise' ? 'active' : '' }}">企业</a>
+    <a href="?role=student" class="tab {{ request('role') === 'student' ? 'active' : '' }}">学生</a>
 </div>
 
 @if ($users->isEmpty())
-    <div style="text-align:center;padding:60px 0;color:#94a3b8;">暂无用户</div>
+    <div class="empty-state">暂无用户</div>
 @else
-    <div style="background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:20px;">
-        <table style="width:100%;border-collapse:collapse;">
+    <div class="table-card">
+        <table class="table">
             <thead>
-                <tr style="text-align:left;border-bottom:1px solid #e2e8f0;">
-                    <th style="padding:10px 12px;font-size:13px;color:#475569;">ID</th>
-                    <th style="padding:10px 12px;font-size:13px;color:#475569;">用户名</th>
-                    <th style="padding:10px 12px;font-size:13px;color:#475569;">姓名</th>
-                    <th style="padding:10px 12px;font-size:13px;color:#475569;">角色</th>
-                    <th style="padding:10px 12px;font-size:13px;color:#475569;">手机号</th>
-                    <th style="padding:10px 12px;font-size:13px;color:#475569;">邮箱</th>
-                    <th style="padding:10px 12px;font-size:13px;color:#475569;">关联</th>
-                    <th style="padding:10px 12px;font-size:13px;color:#475569;">状态</th>
-                    <th style="padding:10px 12px;font-size:13px;color:#475569;">注册时间</th>
-                    <th style="padding:10px 12px;font-size:13px;color:#475569;">操作</th>
+                <tr>
+                    <th style="width:50px">ID</th>
+                    <th style="width:100px">用户名</th>
+                    <th style="width:80px">姓名</th>
+                    <th style="width:100px">角色</th>
+                    <th style="width:120px">手机号</th>
+                    <th style="width:140px">邮箱</th>
+                    <th style="width:90px">关联</th>
+                    <th style="width:70px">状态</th>
+                    <th style="width:100px">注册时间</th>
+                    <th style="width:140px">操作</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($users as $user)
-                <tr style="border-bottom:1px solid #f1f5f9;">
-                    <td style="padding:10px 12px;font-size:14px;">{{ $user->id }}</td>
-                    <td style="padding:10px 12px;font-size:14px;">{{ $user->username ?? '-' }}</td>
-                    <td style="padding:10px 12px;font-size:14px;">{{ $user->name }}</td>
-                    <td style="padding:10px 12px;font-size:14px;">
-                        <span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;
-                            @if($user->role === 'school') background:#dbeafe;color:#1e40af;
-                            @elseif($user->role === 'enterprise') background:#fef3c7;color:#92400e;
-                            @else background:#d1fae5;color:#065f46;
+                <tr>
+                    <td>{{ $user->id }}</td>
+                    <td>{{ $user->username ?? '-' }}</td>
+                    <td>{{ $user->name }}</td>
+                    <td>
+                        <span class="badge badge-sm
+                            @if($user->role === 'school') tag-blue
+                            @elseif($user->role === 'college') tag-purple
+                            @elseif($user->role === 'enterprise') tag-yellow
+                            @else tag-green
                             @endif
-                        ">{{ $user->role === 'school' ? '管理员' : ($user->role === 'enterprise' ? '企业' : '学生') }}</span>
+                        ">{{ $user->role === 'school' ? '学校管理员' : ($user->role === 'college' ? '学院管理员' : ($user->role === 'enterprise' ? '企业' : '学生')) }}</span>
                     </td>
-                    <td style="padding:10px 12px;font-size:14px;">{{ $user->phone }}</td>
-                    <td style="padding:10px 12px;font-size:14px;color:#64748b;">{{ $user->email ?? '-' }}</td>
-                    <td style="padding:10px 12px;font-size:14px;color:#64748b;">{{ $user->enterprise->name ?? '-' }}</td>
-                    <td style="padding:10px 12px;">
-                        <span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;
-                            @if($user->status === 'active') background:#d1fae5;color:#065f46;
-                            @else background:#fee2e2;color:#991b1b;
+                    <td>{{ $user->phone }}</td>
+                    <td class="text-muted">{{ $user->email ?? '-' }}</td>
+                    <td class="text-muted">{{ $user->enterprise->name ?? '-' }}</td>
+                    <td>
+                        <span class="badge badge-sm
+                            @if($user->status === 'active') badge-active
+                            @else badge-disabled
                             @endif
                         ">{{ $user->status === 'active' ? '正常' : '禁用' }}</span>
                     </td>
-                    <td style="padding:10px 12px;font-size:14px;color:#64748b;">{{ $user->created_at->format('Y-m-d') }}</td>
-                    <td style="padding:10px 12px;">
-                        <form method="POST" action="{{ url('admin/users/' . $user->id . '/toggle') }}" style="display:inline;">
-                            @csrf
-                            <button type="submit" style="color:{{ $user->status === 'active' ? '#ef4444' : '#16a34a' }};border:none;background:none;cursor:pointer;font-size:13px;" onclick="return confirm('{{ $user->status === 'active' ? '确定禁用此账号？' : '确定启用此账号？' }}')">{{ $user->status === 'active' ? '禁用' : '启用' }}</button>
-                        </form>
+                    <td class="text-muted">{{ $user->created_at->format('Y-m-d') }}</td>
+                    <td>
+                        <div class="flex gap-xs" style="flex-shrink:0;white-space:nowrap;">
+                            <a href="{{ url('admin/users/' . $user->id . '/edit') }}" class="btn btn-primary btn-xs">编辑</a>
+                            <form method="POST" action="{{ url('admin/users/' . $user->id . '/toggle') }}" style="display:flex;margin:0;padding:0;" onsubmit="return confirm('{{ $user->status === 'active' ? '确定禁用此账号？' : '确定启用此账号？' }}')">@csrf<button type="submit" class="btn btn-xs {{ $user->status === 'active' ? 'btn-danger' : 'btn-success' }}">{{ $user->status === 'active' ? '禁用' : '启用' }}</button></form>
+                        </div>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
-        <div style="margin-top:16px;">{{ $users->links() }}</div>
+        <div class="pagination-container">{{ $users->links() }}</div>
     </div>
 @endif
 @endsection

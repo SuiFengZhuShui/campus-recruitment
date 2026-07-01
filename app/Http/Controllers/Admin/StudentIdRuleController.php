@@ -12,20 +12,22 @@ class StudentIdRuleController extends Controller
 {
     public function index()
     {
-        $rules = StudentIdRule::with('school', 'college')->orderBy('prefix')->paginate(15);
-        $schools = School::orderBy('name')->get();
-        $colleges = College::with('school')->orderBy('name')->get();
+        $rules = StudentIdRule::with('college')->orderBy('prefix')->paginate(15);
+        $colleges = College::orderBy('name')->get();
 
-        return view('admin.rules.index', compact('rules', 'schools', 'colleges'));
+        return view('admin.rules.index', compact('rules', 'colleges'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'school_id' => 'required|exists:schools,id',
             'prefix' => 'required|string|max:20|unique:student_id_rules,prefix',
             'college_id' => 'required|exists:colleges,id',
         ]);
+
+        // Auto-set school_id to the only school
+        $school = School::first();
+        $data['school_id'] = $school ? $school->id : null;
 
         StudentIdRule::create($data);
 
@@ -37,7 +39,6 @@ class StudentIdRuleController extends Controller
         $rule = StudentIdRule::findOrFail($id);
 
         $data = $request->validate([
-            'school_id' => 'exists:schools,id',
             'prefix' => 'string|max:20|unique:student_id_rules,prefix,' . $id,
             'college_id' => 'exists:colleges,id',
         ]);

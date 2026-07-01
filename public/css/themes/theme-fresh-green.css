@@ -1,0 +1,82 @@
+/* ===== Theme: 清新绿 Fresh Green ===== */
+/* 用法：替换 tokens.css + welcome.css 中对应变量 */
+
+:root {
+    --color-primary: #0d9488;
+    --color-primary-dark: #0f766e;
+    --color-primary-deep: #042f2e;
+    --color-accent: #f59e0b;
+    --color-accent-hover: #d97706;
+    --color-highlight: #e04040;
+
+    --color-bg: #f5faf8;
+    --color-surface: #fff;
+    --color-text: #2d3a36;
+    --color-text-muted: #5f7a6e;
+    --color-text-light: #8aaa9a;
+    --color-text-heading: #0f2a22;
+    --color-text-sub: #3d5a4a;
+    --color-border: #b4ccc0;
+    --color-border-light: #dce8e2;
+    --color-border-input: #b4ccc0;
+
+    --color-sidebar: #042f2e;
+    --color-sidebar-hover: #084c48;
+    --color-sidebar-text: rgba(255,255,255,.82);
+    --color-sidebar-active: var(--color-accent);
+
+    --tag-blue-bg: #ccfbf1;
+    --tag-blue-text: #0f766e;
+    --tag-green-bg: #d1fae5;
+    --tag-green-text: #065f46;
+    --tag-yellow-bg: #fef3c7;
+    --tag-yellow-text: #92400e;
+    --tag-red-bg: #fee2e2;
+    --tag-red-text: #991b1b;
+    --tag-gray-bg: #ecfdf5;
+    --tag-gray-text: #5f7a6e;
+
+    --flash-success-bg: #ecfdf5;
+    --flash-success-text: #065f46;
+    --flash-error-bg: #fef2f2;
+    --flash-error-text: #991b1b;
+
+    --space-xs: 4px; --space-sm: 8px; --space-md: 12px;
+    --space-lg: 16px; --space-xl: 20px; --space-2xl: 24px; --space-3xl: 32px;
+
+    --radius-sm: 6px; --radius-md: 8px; --radius-lg: 12px;
+    --radius-xl: 16px; --radius-full: 50%;
+
+    --text-xs: 12px; --text-sm: 13px; --text-base: 14px; --text-md: 15px;
+    --text-lg: 16px; --text-xl: 18px; --text-2xl: 20px; --text-3xl: 22px;
+    --text-4xl: 24px; --text-5xl: 28px;
+
+    --font-normal: 400; --font-medium: 500; --font-semibold: 600; --font-bold: 700;
+
+    --shadow-card: 0 2px 8px rgba(0,0,0,.04);
+    --shadow-card-hover: 0 4px 20px rgba(13,148,136,.15);
+    --shadow-popup: 0 0 8px rgba(0,0,0,.2);
+
+    --transition-fast: all .2s ease;
+
+    --font-sans: "Microsoft YaHei", "PingFang SC", SimSun, Arial, Helvetica, Tahoma, sans-serif;
+
+    --gradient-hero: linear-gradient(to bottom, #042f2e, #0f766e, rgba(255,255,255,0));
+    --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    --gradient-back: linear-gradient(135deg, #0d9488, #0f766e);
+}
+
+/* Welcome page override */
+.welcome-page {
+    background: var(--gradient-hero);
+}
+
+.welcome-btn-outline:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+/* 清新绿 — 更圆的按钮 */
+.btn { border-radius: var(--radius-md); }
+.btn-back { border-radius: var(--radius-md); }
+.card { border-radius: var(--radius-lg); }

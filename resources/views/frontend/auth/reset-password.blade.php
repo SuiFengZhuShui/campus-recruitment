@@ -3,28 +3,28 @@
 @section('title', '重置密码')
 
 @section('content')
-<div class="container" style="max-width:420px;margin-top:60px;">
+<div class="auth-container">
     <div class="card" style="padding:32px;">
-        <h2 style="text-align:center;margin-bottom:24px;">重置密码</h2>
-        <div id="flash" style="display:none;"></div>
+        <h2 class="auth-title">重置密码</h2>
+        <div id="flash" class="hidden"></div>
         <form id="resetForm" onsubmit="doReset(event)">
             @csrf
-            <div style="margin-bottom:16px;">
-                <label style="display:block;font-size:14px;color:#475569;margin-bottom:4px;">注册邮箱</label>
-                <input type="email" name="email" required style="width:100%;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;" placeholder="请输入注册时使用的邮箱">
+            <div class="form-group">
+                <label class="form-label">注册邮箱</label>
+                <input type="email" name="email" required class="form-input form-input-lg" placeholder="请输入注册时使用的邮箱">
             </div>
-            <div style="margin-bottom:16px;">
-                <label style="display:block;font-size:14px;color:#475569;margin-bottom:4px;">重置令牌</label>
-                <input type="text" name="token" required style="width:100%;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;" placeholder="请输入邮件中的重置令牌">
+            <div class="form-group">
+                <label class="form-label">重置令牌</label>
+                <input type="text" name="token" required class="form-input form-input-lg" placeholder="请输入邮件中的重置令牌">
             </div>
-            <div style="margin-bottom:16px;">
-                <label style="display:block;font-size:14px;color:#475569;margin-bottom:4px;">新密码</label>
-                <input type="password" name="password" required minlength="6" style="width:100%;padding:10px 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;" placeholder="请设置新密码（至少6位）">
+            <div class="form-group">
+                <label class="form-label">新密码</label>
+                <input type="password" name="password" required minlength="6" class="form-input form-input-lg" placeholder="请设置新密码（至少6位）">
             </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;font-size:16px;justify-content:center;">重置密码</button>
+            <button type="submit" class="btn btn-primary w-full" style="padding:12px;font-size:16px;justify-content:center;">重置密码</button>
         </form>
-        <div style="text-align:center;margin-top:16px;font-size:14px;color:#64748b;">
-            <a href="/login" style="color:#3b82f6;">&larr; 返回登录</a>
+        <div class="auth-link">
+            <a href="/login">&larr; 返回登录</a>
         </div>
     </div>
 </div>
@@ -37,13 +37,13 @@ async function doReset(e) {
     try {
         const r = await fetch('/api/auth/reset-password', {
             method:'POST', body:fd,
-            headers:{'X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content}
+            headers:{'Accept':'application/json','X-Requested-With':'XMLHttpRequest','X-CSRF-TOKEN':document.querySelector('meta[name=csrf-token]').content}
         });
         const d = await r.json();
         el.style.display = 'block';
         if (d.code === 200) {
             el.className = 'flash flash-success';
-            el.innerHTML = d.message + ' <a href="/login" style="color:#3b82f6;">去登录</a>';
+            el.innerHTML = d.message + ' <a href="/login" class="text-primary">去登录</a>';
         } else {
             el.className = 'flash flash-error';
             el.textContent = d.message || '重置失败';

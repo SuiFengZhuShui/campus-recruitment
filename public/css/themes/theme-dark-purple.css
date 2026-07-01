@@ -1,0 +1,77 @@
+/* ===== Theme: 暗夜紫 Dark Purple ===== */
+/* 用法：替换 tokens.css + welcome.css 中对应变量 */
+
+:root {
+    --color-primary: #6c3bd6;
+    --color-primary-dark: #4a1fa8;
+    --color-primary-deep: #1a0533;
+    --color-accent: #f0b90b;
+    --color-accent-hover: #e8a800;
+    --color-highlight: #e04060;
+
+    --color-bg: #f8f9fc;
+    --color-surface: #fff;
+    --color-text: #2d2d3a;
+    --color-text-muted: #6b6b80;
+    --color-text-light: #9a9ab0;
+    --color-text-heading: #1a1a2e;
+    --color-text-sub: #4a4a60;
+    --color-border: #c4c4d4;
+    --color-border-light: #e4e4f0;
+    --color-border-input: #c4c4d4;
+
+    --color-sidebar: #1a0533;
+    --color-sidebar-hover: #2d1060;
+    --color-sidebar-text: rgba(255,255,255,.78);
+    --color-sidebar-active: var(--color-accent);
+
+    --tag-blue-bg: #e8e0f8;
+    --tag-blue-text: #4a1fa8;
+    --tag-green-bg: #d4f0e0;
+    --tag-green-text: #0d6b3d;
+    --tag-yellow-bg: #fef3c7;
+    --tag-yellow-text: #92400e;
+    --tag-red-bg: #fce4ec;
+    --tag-red-text: #991b3d;
+    --tag-gray-bg: #f1f1f6;
+    --tag-gray-text: #6b6b80;
+
+    --flash-success-bg: #e8f5e9;
+    --flash-success-text: #166534;
+    --flash-error-bg: #fef2f2;
+    --flash-error-text: #991b1b;
+
+    --space-xs: 4px; --space-sm: 8px; --space-md: 12px;
+    --space-lg: 16px; --space-xl: 20px; --space-2xl: 24px; --space-3xl: 32px;
+
+    --radius-sm: 4px; --radius-md: 6px; --radius-lg: 10px;
+    --radius-xl: 12px; --radius-full: 50%;
+
+    --text-xs: 12px; --text-sm: 13px; --text-base: 14px; --text-md: 15px;
+    --text-lg: 16px; --text-xl: 18px; --text-2xl: 20px; --text-3xl: 22px;
+    --text-4xl: 24px; --text-5xl: 28px;
+
+    --font-normal: 400; --font-medium: 500; --font-semibold: 600; --font-bold: 700;
+
+    --shadow-card: 0 1px 3px rgba(0,0,0,.06);
+    --shadow-card-hover: 0 4px 16px rgba(108,59,214,.18);
+    --shadow-popup: 0 0 8px rgba(0,0,0,.2);
+
+    --transition-fast: all .15s;
+
+    --font-sans: "Microsoft YaHei", "PingFang SC", SimSun, Arial, Helvetica, Tahoma, sans-serif;
+
+    --gradient-hero: linear-gradient(to bottom, #1a0533, #2d1060, transparent);
+    --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    --gradient-back: linear-gradient(135deg, #c7915c, #d4a574);
+}
+
+/* Welcome page override */
+.welcome-page {
+    background: var(--gradient-hero);
+}
+
+.welcome-btn-outline:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}

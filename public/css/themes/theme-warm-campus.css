@@ -1,0 +1,236 @@
+/* ===== Theme V3: 暖阳校园 Warm Campus — 现代校园招聘风格 ===== */
+/* 设计理念：暖橙+琥珀金主色、柔白背景、年轻活力、亲切友好 */
+/* 参考：Airbnb (warm coral) + 现代教育平台 (friendly rounded) */
+
+:root {
+    /* Colors — 暖橙+琥珀金 */
+    --color-primary: #f15a24;
+    --color-primary-dark: #d9480f;
+    --color-primary-deep: #7c2d12;
+    --color-accent: #f59e0b;
+    --color-accent-hover: #d97706;
+    --color-highlight: #e04040;
+
+    --color-bg: #fefaf5;
+    --color-surface: #fff;
+    --color-text: #3d2e28;
+    --color-text-muted: #7a6658;
+    --color-text-light: #a89484;
+    --color-text-heading: #2a1a10;
+    --color-text-sub: #5a4030;
+    --color-border: #e0d4c8;
+    --color-border-light: #f0e8e0;
+    --color-border-input: #d8c8b8;
+
+    /* Sidebar — 暖深棕 */
+    --color-sidebar: #2a1a10;
+    --color-sidebar-hover: #3d2a1c;
+    --color-sidebar-text: rgba(255,255,255,.7);
+    --color-sidebar-active: var(--color-accent);
+
+    /* Tag / Badge — 暖调柔和 */
+    --tag-blue-bg: #fff0e8;
+    --tag-blue-text: #c2410c;
+    --tag-green-bg: #e8f5e9;
+    --tag-green-text: #2e7d32;
+    --tag-yellow-bg: #fef9e7;
+    --tag-yellow-text: #8d6e00;
+    --tag-red-bg: #fce4ec;
+    --tag-red-text: #c62828;
+    --tag-gray-bg: #faf6f2;
+    --tag-gray-text: #7a6658;
+
+    /* Flash */
+    --flash-success-bg: #e8f5e9;
+    --flash-success-text: #2e7d32;
+    --flash-error-bg: #fef2f2;
+    --flash-error-text: #c62828;
+
+    /* Spacing — 略宽松 */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 14px;
+    --space-lg: 18px;
+    --space-xl: 22px;
+    --space-2xl: 28px;
+    --space-3xl: 36px;
+
+    /* Border radius — 柔和圆角 */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 14px;
+    --radius-xl: 16px;
+    --radius-full: 50%;
+
+    /* Font sizes */
+    --text-xs: 12px;
+    --text-sm: 13px;
+    --text-base: 14px;
+    --text-md: 15px;
+    --text-lg: 17px;
+    --text-xl: 19px;
+    --text-2xl: 22px;
+    --text-3xl: 26px;
+    --text-4xl: 30px;
+    --text-5xl: 36px;
+
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+
+    /* Shadows — 温暖柔和 */
+    --shadow-card: 0 2px 8px rgba(120,80,40,.04), 0 1px 2px rgba(120,80,40,.06);
+    --shadow-card-hover: 0 6px 20px rgba(241,90,36,.08), 0 2px 6px rgba(120,80,40,.06);
+    --shadow-popup: 0 0 0 1px rgba(120,80,40,.04), 0 12px 32px rgba(120,80,40,.1);
+
+    --transition-fast: all .2s cubic-bezier(.4,0,.2,1);
+
+    --font-sans: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, -apple-system, sans-serif;
+
+    /* 渐变 — 温暖日落感 */
+    --gradient-hero: linear-gradient(160deg, #7c2d12 0%, #c2410c 35%, #f15a24 70%, #f59e0b 100%);
+    --gradient-primary: linear-gradient(135deg, #f15a24, #f97316);
+    --gradient-back: linear-gradient(135deg, #f15a24, #ea580c);
+
+    --color-danger: #e04040;
+    --color-danger-dark: #c62828;
+    --color-success: #43a047;
+    --color-success-dark: #2e7d32;
+    --color-primary-gradient: var(--gradient-primary);
+}
+
+/* 卡片 hover — 柔和上浮+暖晕 */
+.card-hover-primary:hover {
+    background: var(--color-surface);
+    color: inherit;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(241,90,36,.1), 0 2px 6px rgba(120,80,40,.04);
+    border-color: rgba(241,90,36,.12);
+}
+
+.card-hover-primary:hover .stat-label,
+.card-hover-primary:hover .stat-value,
+.card-hover-primary:hover .stat-detail,
+.card-hover-primary:hover span,
+.card-hover-primary:hover a {
+    color: inherit;
+}
+
+.card-hover-primary:hover .stat-value {
+    color: var(--color-primary);
+}
+
+/* Welcome page — 日落渐变 */
+.welcome-page {
+    background: var(--gradient-hero);
+}
+
+/* 按钮 — 柔和圆角+温暖感 */
+.btn {
+    border-radius: var(--radius-md);
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    box-shadow: 0 2px 8px rgba(241,90,36,.2);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 4px 16px rgba(241,90,36,.3);
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    border-radius: var(--radius-md);
+}
+
+.btn-outline:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(241,90,36,.04);
+}
+
+.btn-back {
+    border-radius: var(--radius-md);
+}
+
+.welcome-btn {
+    border-radius: 12px;
+}
+
+.welcome-btn-primary {
+    background: var(--gradient-primary);
+    box-shadow: 0 4px 20px rgba(241,90,36,.25);
+}
+
+.welcome-btn-primary:hover {
+    box-shadow: 0 6px 28px rgba(241,90,36,.4);
+    transform: translateY(-1px);
+}
+
+.welcome-btn-outline {
+    border-radius: 12px;
+}
+
+.welcome-btn-outline:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background: rgba(245,158,11,.1);
+}
+
+/* 表单 — 暖橙聚焦环 */
+.form-input {
+    border-radius: var(--radius-sm);
+}
+
+.form-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(241,90,36,.1);
+}
+
+/* 表格行 hover — 暖底 */
+.table tr:hover td {
+    background: rgba(241,90,36,.02);
+}
+
+/* 侧栏 — 暖深棕 */
+.sidebar {
+    background: linear-gradient(180deg, #2a1a10 0%, #3d2a1c 100%);
+}
+
+.sidebar-menu a.active {
+    color: #2a1a10;
+}
+
+/* Tab */
+.tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+/* 统计卡片 — 微妙边框 */
+.stat-card {
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-lg);
+}
+
+.stat-card:hover {
+    border-color: rgba(241,90,36,.15);
+    background: linear-gradient(180deg, #fff 0%, rgba(241,90,36,.015) 100%);
+}
+
+/* 卡片 */
+.card {
+    border-radius: var(--radius-lg);
+}
+
+/* 标签 — 柔和圆角 */
+.tag {
+    border-radius: 8px;
+}
+
+/* 徽章 */
+.badge {
+    border-radius: 8px;
+}

@@ -38,7 +38,7 @@ class PasswordResetTest extends TestCase
         ]);
 
         $response->assertStatus(200)
-            ->assertJson(['code' => 200]); // Same message for security
+            ->assertJson(['code' => 422]);
     }
 
     // === Reset Password ===

@@ -1,0 +1,103 @@
+/* ===== Design Tokens ===== */
+
+:root {
+    /* Colors — 主蓝 #0471e2 + 金黄 #fed400 + hover 暖橙 #fa9e00 */
+    --color-primary: #0471e2;
+    --color-primary-dark: #0068b7;
+    --color-primary-deep: #2b20cb;
+    --color-accent: #fed400;
+    --color-accent-hover: #fa9e00;
+    --color-highlight: #a61c31;
+
+    --color-bg: #f5f7fa;
+    --color-surface: #fff;
+    --color-text: #333;
+    --color-text-muted: #666;
+    --color-text-light: #999;
+    --color-text-heading: #000;
+    --color-text-sub: #535353;
+    --color-border: #b6b6b6;
+    --color-border-light: #ddd;
+    --color-border-input: #b6b6b6;
+
+    /* Sidebar — 深蓝 */
+    --color-sidebar: #0068a8;
+    --color-sidebar-hover: #004d80;
+    --color-sidebar-text: rgba(255,255,255,.85);
+    --color-sidebar-active: var(--color-accent);
+
+    /* Tag / Badge */
+    --tag-blue-bg: #dbeafe;
+    --tag-blue-text: #1e40af;
+    --tag-green-bg: #d1fae5;
+    --tag-green-text: #065f46;
+    --tag-yellow-bg: #fef3c7;
+    --tag-yellow-text: #92400e;
+    --tag-red-bg: #fee2e2;
+    --tag-red-text: #991b1b;
+    --tag-purple-bg: #ede9fe;
+    --tag-purple-text: #5b21b6;
+    --tag-gray-bg: #f1f5f9;
+    --tag-gray-text: #64748b;
+
+    /* Flash */
+    --flash-success-bg: #f0fdf4;
+    --flash-success-text: #166534;
+    --flash-error-bg: #fef2f2;
+    --flash-error-text: #991b1b;
+
+    /* Spacing */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 20px;
+    --space-2xl: 24px;
+    --space-3xl: 32px;
+
+    /* Border radius — 偏方正风格 */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
+    --radius-xl: 12px;
+    --radius-full: 50%;
+
+    /* Font sizes */
+    --text-xs: 12px;
+    --text-sm: 13px;
+    --text-base: 14px;
+    --text-md: 15px;
+    --text-lg: 16px;
+    --text-xl: 18px;
+    --text-2xl: 20px;
+    --text-3xl: 22px;
+    --text-4xl: 24px;
+    --text-5xl: 28px;
+
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+
+    /* Shadows */
+    --shadow-card: 0 1px 3px rgba(0,0,0,.06);
+    --shadow-card-hover: 0 4px 12px rgba(0,0,0,.1);
+    --shadow-popup: 0 0 5px rgba(0,0,0,.3);
+
+    --transition-fast: all .15s;
+
+    /* Font stack */
+    --font-sans: "Microsoft YaHei", "PingFang SC", SimSun, Arial, Helvetica, Tahoma, sans-serif;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(to bottom, #2b20cb, transparent);
+    --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    --gradient-back: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+
+    /* Semantic */
+    --color-danger: #dc2626;
+    --color-danger-dark: #991b1b;
+    --color-success: #16a34a;
+    --color-success-dark: #166534;
+    --color-primary-gradient: var(--gradient-primary);
+}

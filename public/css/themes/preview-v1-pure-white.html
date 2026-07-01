@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V1 极净白 — 校园招聘平台</title>
+<link rel="stylesheet" href="theme-pure-white.css">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:"PingFang SC","Microsoft YaHei",sans-serif; background:var(--color-bg); }
+.topbar { background:#1a1a2e; padding:10px 24px; color:#fff; font-size:13px; display:flex; gap:24px; align-items:center; }
+.topbar span { color:rgba(255,255,255,.5); }
+.topbar strong { color:#fff; }
+.layout { display:flex; min-height:calc(100vh - 40px); }
+.sidebar { width:200px; background:var(--color-sidebar); color:var(--color-sidebar-text); padding:12px 0; flex-shrink:0; }
+.sidebar a { display:flex; align-items:center; gap:8px; padding:10px 20px; color:var(--color-sidebar-text); text-decoration:none; font-size:13px; transition:var(--transition-fast); }
+.sidebar a:hover { background:var(--color-sidebar-hover); color:#fff; }
+.sidebar a.active { background:var(--color-sidebar-active); color:var(--color-primary-dark); font-weight:600; }
+.main { flex:1; padding:24px; }
+.header { background:var(--color-surface); padding:14px 24px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-border-light); margin:-24px -24px 24px; }
+.header h1 { font-size:18px; font-weight:600; }
+.header-user { font-size:13px; color:var(--color-text-muted); }
+
+.stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+.stat-card { background:var(--color-surface); padding:20px; border-radius:var(--radius-lg); box-shadow:var(--shadow-card); transition:var(--transition-fast); cursor:pointer; }
+.stat-card:hover { box-shadow:var(--shadow-card-hover); transform:translateY(-2px); }
+.stat-label { font-size:11px; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; }
+.stat-value { font-size:28px; font-weight:700; color:var(--color-text-heading); }
+.stat-detail { font-size:12px; margin-top:4px; color:var(--color-text-muted); }
+
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:24px; }
+.card { background:var(--color-surface); padding:20px; border-radius:var(--radius-lg); box-shadow:var(--shadow-card); transition:var(--transition-fast); cursor:pointer; }
+.card:hover { box-shadow:var(--shadow-card-hover); transform:translateY(-2px); }
+.card h3 { font-size:15px; margin-bottom:6px; }
+.card p { font-size:13px; color:var(--color-text-muted); line-height:1.6; }
+
+.btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+.btn { display:inline-flex; align-items:center; padding:8px 20px; border:none; border-radius:var(--radius-md); font-size:14px; font-weight:500; cursor:pointer; text-decoration:none; transition:var(--transition-fast); }
+.btn-primary { background:var(--color-primary); color:#fff; }
+.btn-primary:hover { opacity:.9; transform:translateY(-1px); }
+.btn-outline { border:1px solid var(--color-border-input); background:var(--color-surface); color:var(--color-text-sub); }
+.btn-outline:hover { border-color:var(--color-primary); color:var(--color-primary); }
+.btn-back { display:inline-flex; align-items:center; gap:4px; padding:8px 18px; background:var(--gradient-back); color:#fff; border:none; border-radius:var(--radius-md); font-size:13px; font-weight:500; text-decoration:none; }
+.btn-sm { padding:6px 14px; font-size:12px; }
+.btn-xs { padding:4px 10px; font-size:12px; }
+
+.tag-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+.tag { display:inline-block; padding:2px 8px; border-radius:10px; font-size:12px; }
+.tag-blue { background:var(--tag-blue-bg); color:var(--tag-blue-text); }
+.tag-green { background:var(--tag-green-bg); color:var(--tag-green-text); }
+.tag-yellow { background:var(--tag-yellow-bg); color:var(--tag-yellow-text); }
+.tag-red { background:var(--tag-red-bg); color:var(--tag-red-text); }
+.tag-gray { background:var(--tag-gray-bg); color:var(--tag-gray-text); }
+
+.badge { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px; font-weight:600; }
+.badge-pending { background:var(--tag-yellow-bg); color:var(--tag-yellow-text); }
+.badge-approved { background:var(--tag-green-bg); color:var(--tag-green-text); }
+.badge-rejected { background:var(--tag-red-bg); color:var(--tag-red-text); }
+
+.table-wrap { background:var(--color-surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-card); overflow:hidden; margin-bottom:24px; }
+.table-wrap table { width:100%; border-collapse:collapse; }
+.table-wrap th { text-align:left; padding:10px 14px; font-size:11px; color:var(--color-text-sub); border-bottom:1px solid var(--color-border); text-transform:uppercase; letter-spacing:.04em; font-weight:600; }
+.table-wrap td { padding:10px 14px; font-size:13px; border-bottom:1px solid var(--color-border-light); }
+.table-wrap tr:last-child td { border-bottom:none; }
+.table-wrap tr:hover td { background:rgba(0,0,0,.01); }
+
+.tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:2px solid var(--color-border); }
+.tab { padding:10px 20px; text-decoration:none; font-size:14px; font-weight:500; color:var(--color-text-muted); border-bottom:2px solid transparent; margin-bottom:-2px; }
+.tab.active { color:var(--color-primary); border-bottom-color:var(--color-primary); }
+
+.flash { padding:10px 16px; border-radius:var(--radius-md); font-size:14px; margin-bottom:16px; }
+.flash-success { background:var(--flash-success-bg); color:var(--flash-success-text); }
+.flash-error { background:var(--flash-error-bg); color:var(--flash-error-text); }
+
+.form-group { margin-bottom:12px; }
+.form-label { display:block; font-size:13px; color:var(--color-text-sub); margin-bottom:4px; }
+.form-input { width:100%; padding:8px 12px; border:1px solid var(--color-border-input); border-radius:var(--radius-sm); font-size:14px; font-family:inherit; transition:var(--transition-fast); }
+.form-input:focus { outline:none; border-color:var(--color-primary); box-shadow:0 0 0 3px rgba(91,95,227,.1); }
+
+.section-title { font-size:13px; font-weight:600; color:var(--color-text-sub); text-transform:uppercase; letter-spacing:.04em; margin-bottom:10px; margin-top:24px; }
+.section-title:first-of-type { margin-top:0; }
+
+.text-muted { color:var(--color-text-muted); }
+.text-xs { font-size:12px; }
+.mt-sm { margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <strong>V1 极净白</strong>
+  <span>|</span>
+  <span>Apple / Linear 极简风格 — 纯白面布 · 靛蓝单点强调 · 最小铬装饰</span>
+  <span style="margin-left:auto;">打开预览二/三对比 →</span>
+</div>
+
+<div class="layout">
+  <nav class="sidebar">
+    <a href="#" class="active">📊 仪表盘</a>
+    <a href="#">🏫 院校管理</a>
+    <a href="#">🏢 企业管理</a>
+    <a href="#">👨‍🎓 学生管理</a>
+    <a href="#">📋 规则管理</a>
+    <a href="#">⚙️ 系统设置</a>
+  </nav>
+
+  <main class="main">
+    <div class="header">
+      <h1>管理仪表盘</h1>
+      <span class="header-user">管理员</span>
+    </div>
+
+    <div class="flash flash-success">✅ 操作成功 — 数据已更新</div>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">院校总数</div><div class="stat-value">128</div><div class="stat-detail">+12 本月新增</div></div>
+      <div class="stat-card"><div class="stat-label">企业总数</div><div class="stat-value">356</div><div class="stat-detail">45 待审核</div></div>
+      <div class="stat-card"><div class="stat-label">学生总数</div><div class="stat-value">8,942</div><div class="stat-detail">活跃 62%</div></div>
+      <div class="stat-card"><div class="stat-label">本月投递</div><div class="stat-value">1,204</div><div class="stat-detail" style="color:#30a46c;">↑ 18% 同比增长</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card"><h3>最新入驻企业</h3><p>星辰科技有限公司、远航数据集团、云帆信息技术 — 3 家企业待审核资质</p></div>
+      <div class="card"><h3>热门岗位 TOP3</h3><p>软件开发工程师（38人投递）、产品经理（25人投递）、数据分析师（19人投递）</p></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary">主要操作</button>
+      <button class="btn btn-outline">次要操作</button>
+      <a href="#" class="btn-back">← 返回上一级</a>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag tag-blue">技术类</span>
+      <span class="tag tag-green">已通过</span>
+      <span class="tag tag-yellow">待审核</span>
+      <span class="tag tag-red">已拒绝</span>
+      <span class="tag tag-gray">已过期</span>
+    </div>
+
+    <div class="section-title">最近申请</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>学生</th><th>岗位</th><th>企业</th><th>状态</th><th>日期</th></tr></thead>
+        <tbody>
+          <tr><td>张三</td><td>前端开发工程师</td><td>星辰科技</td><td><span class="badge badge-pending">待审核</span></td><td>06-14</td></tr>
+          <tr><td>李四</td><td>Java 后端工程师</td><td>远航数据</td><td><span class="badge badge-approved">已通过</span></td><td>06-13</td></tr>
+          <tr><td>王五</td><td>UI/UX 设计师</td><td>云帆信息</td><td><span class="badge badge-rejected">已拒绝</span></td><td>06-12</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-title">筛选</div>
+    <div class="tabs">
+      <a href="#" class="tab active">全部</a>
+      <a href="#" class="tab">待处理</a>
+      <a href="#" class="tab">已处理</a>
+    </div>
+
+    <div class="section-title">搜索</div>
+    <div style="max-width:400px;">
+      <div class="form-group"><label class="form-label">关键字</label><input class="form-input" placeholder="输入搜索内容..."></div>
+      <div class="form-group"><label class="form-label">类型</label><select class="form-input"><option>全部</option><option>技术类</option><option>管理类</option></select></div>
+      <button class="btn btn-primary" style="margin-top:4px;">搜索</button>
+    </div>
+  </main>
+</div>
+</body>
+</html>

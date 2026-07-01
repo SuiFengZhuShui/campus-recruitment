@@ -14,10 +14,26 @@ class SchoolSeeder extends Seeder
             'name' => '校园招聘平台',
         ]);
 
-        $college = College::create([
-            'school_id' => $school->id,
-            'name' => '计算机学院',
-        ]);
+        // 8 个二级学院（教学/思政类学院不参与招聘）
+        $colleges = [
+            '机电工程学院',
+            '汽车工程学院',
+            '电子信息工程学院',
+            '环境与食品工程学院',
+            '财经与物流管理学院',
+            '贸易与旅游管理学院',
+            '艺术学院',
+            '国际教育学院',
+        ];
+
+        $collegeIds = [];
+        foreach ($colleges as $name) {
+            $college = College::create([
+                'school_id' => $school->id,
+                'name' => $name,
+            ]);
+            $collegeIds[] = $college->id;
+        }
 
         // School admin
         User::create([
@@ -25,25 +41,41 @@ class SchoolSeeder extends Seeder
             'username' => 'admin',
             'college_id' => null,
             'name' => '学校管理员',
-            'phone' => '13800000000',
+            'phone' => '13700000000',
             'email' => 'admin@school.com',
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make('123456'),
             'status' => 'active',
         ]);
 
-        // College admin
-        User::create([
-            'role' => 'college',
-            'username' => 'college',
-            'college_id' => $college->id,
-            'name' => '计算机学院管理员',
-            'phone' => '13800000001',
-            'email' => 'college@school.com',
-            'password' => Hash::make('college123'),
-            'status' => 'active',
-        ]);
+        // 每个学院一个管理员账号
+        $collegeUsers = [
+            ['username' => 'jidian',    'name' => '机电工程学院管理员'],
+            ['username' => 'qiche',     'name' => '汽车工程学院管理员'],
+            ['username' => 'dianxin',   'name' => '电子信息工程学院管理员'],
+            ['username' => 'huanjing',  'name' => '环境与食品工程学院管理员'],
+            ['username' => 'caijing',   'name' => '财经与物流管理学院管理员'],
+            ['username' => 'maoyi',     'name' => '贸易与旅游管理学院管理员'],
+            ['username' => 'yishu',     'name' => '艺术学院管理员'],
+            ['username' => 'guojiao',   'name' => '国际教育学院管理员'],
+        ];
 
-        $this->command->info("School admin: admin / admin123");
-        $this->command->info("College admin: college / college123 (college_id={$college->id})");
+        foreach ($collegeUsers as $i => $cu) {
+            User::create([
+                'role' => 'college',
+                'username' => $cu['username'],
+                'college_id' => $collegeIds[$i],
+                'name' => $cu['name'],
+                'phone' => '1370000001' . $i,
+                'email' => $cu['username'] . '@school.com',
+                'password' => Hash::make('123456'),
+                'status' => 'active',
+            ]);
+        }
+
+        $this->command->info('School admin: admin / 123456');
+        $this->command->info('College accounts (all password: 123456):');
+        foreach ($collegeUsers as $cu) {
+            $this->command->info("  {$cu['username']} — {$cu['name']}");
+        }
     }
 }
