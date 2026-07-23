@@ -9,3 +9,14 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+
+# 安全：防止 git archive 导出敏感文件
+.env export-ignore
+.env.example export-ignore
+.env.* export-ignore
+phpunit.xml export-ignore
+storage/ export-ignore
+tests/ export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+*.log export-ignore
