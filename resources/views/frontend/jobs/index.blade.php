@@ -90,16 +90,7 @@ async function search(page = 1) {
         }
         document.getElementById('jobList').innerHTML = html;
 
-        // Pagination
-        let pager = '';
-        if (meta.last_page > 1) {
-            pager += '<div class="pagination">';
-            for (let i = 1; i <= meta.last_page; i++) {
-                pager += `<button onclick="search(${i})" class="pagination-btn${i === currentPage ? ' active' : ''}" type="button">${i}</button>`;
-            }
-            pager += '</div>';
-        }
-        document.getElementById('pagination').innerHTML = pager;
+        renderPagination('pagination', currentPage, meta.last_page, 'search');
     } catch(e) {
         document.getElementById('jobList').innerHTML = '<div class="card empty-state-card text-danger">加载失败</div>';
     }

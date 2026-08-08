@@ -10,7 +10,7 @@ class SchoolSeeder extends Seeder
 {
     public function run()
     {
-        $school = School::create([
+        $school = School::firstOrCreate([
             'name' => '校园招聘平台',
         ]);
 
@@ -28,7 +28,7 @@ class SchoolSeeder extends Seeder
 
         $collegeIds = [];
         foreach ($colleges as $name) {
-            $college = College::create([
+            $college = College::firstOrCreate([
                 'school_id' => $school->id,
                 'name' => $name,
             ]);
@@ -36,16 +36,18 @@ class SchoolSeeder extends Seeder
         }
 
         // School admin
-        User::create([
-            'role' => 'school',
-            'username' => 'admin',
-            'college_id' => null,
-            'name' => '学校管理员',
-            'phone' => '13700000000',
-            'email' => 'admin@school.com',
-            'password' => Hash::make('CHANGE_ME'),
-            'status' => 'active',
-        ]);
+        User::firstOrCreate(
+            ['phone' => '13700000000'],
+            [
+                'role' => 'school',
+                'username' => 'admin',
+                'college_id' => null,
+                'name' => '学校管理员',
+                'email' => 'admin@school.com',
+                'password' => Hash::make('CHANGE_ME'),
+                'status' => 'active',
+            ]
+        );
 
         // 每个学院一个管理员账号
         $collegeUsers = [
@@ -60,16 +62,18 @@ class SchoolSeeder extends Seeder
         ];
 
         foreach ($collegeUsers as $i => $cu) {
-            User::create([
-                'role' => 'college',
-                'username' => $cu['username'],
-                'college_id' => $collegeIds[$i],
-                'name' => $cu['name'],
-                'phone' => '1370000001' . $i,
-                'email' => $cu['username'] . '@school.com',
-                'password' => Hash::make('CHANGE_ME'),
-                'status' => 'active',
-            ]);
+            User::firstOrCreate(
+                ['phone' => '1370000001' . $i],
+                [
+                    'role' => 'college',
+                    'username' => $cu['username'],
+                    'college_id' => $collegeIds[$i],
+                    'name' => $cu['name'],
+                    'email' => $cu['username'] . '@school.com',
+                    'password' => Hash::make('CHANGE_ME'),
+                    'status' => 'active',
+                ]
+            );
         }
 
         $this->command->info('School admin: admin / CHANGE_ME');

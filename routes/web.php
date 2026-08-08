@@ -100,8 +100,9 @@ Route::prefix('admin')->namespace('Admin')->group(function () {
         Route::delete('jobs/{id}', 'JobController@destroy')->name('admin.jobs.destroy');
     });
 
-    // Profile — both school and college can change password
+    // Theme + Profile — both school and college access
     Route::middleware(['auth', 'role:school,college'])->group(function () {
+        Route::post('theme', 'ThemeController@switch')->name('admin.theme.switch');
         Route::get('profile', 'ProfileController@index')->name('admin.profile');
         Route::put('profile/password', 'ProfileController@updatePassword')->name('admin.profile.password');
     });

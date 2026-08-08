@@ -119,17 +119,7 @@ async function searchJobs(page = 1) {
             `).join('');
         }
 
-        const pg = document.getElementById('pagination');
-        if (meta.last_page > 1) {
-            let html = '<div class="pagination">';
-            for (let i = 1; i <= meta.last_page; i++) {
-                html += `<button onclick="searchJobs(${i})" class="pagination-btn${i === page ? ' active' : ''}" type="button">${i}</button>`;
-            }
-            html += '</div>';
-            pg.innerHTML = html;
-        } else {
-            pg.innerHTML = '';
-        }
+        renderPagination('pagination', page, meta.last_page, 'searchJobs');
     } catch(e) {
         document.getElementById('jobList').innerHTML = '<div class="card empty-state-card text-danger">加载失败</div>';
     }
