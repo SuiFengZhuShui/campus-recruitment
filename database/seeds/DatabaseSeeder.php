@@ -18,6 +18,19 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
+        // Dev: safe re-run — truncate dependent tables first
+        Offer::query()->delete();
+        Interview::query()->delete();
+        Application::query()->delete();
+        Job::query()->delete();
+        EnterpriseDoc::query()->delete();
+        Enterprise::query()->delete();
+        Student::query()->delete();
+        StudentIdRule::query()->delete();
+        User::where('role', '!=', 'school')->delete();
+        College::query()->delete();
+        School::query()->delete();
+
         $this->call(SchoolSeeder::class);
 
         $colleges = College::all();

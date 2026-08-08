@@ -6,6 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', '管理后台') - {{ config('school.short_name') }}</title>
     <link rel="stylesheet" href="{{ url('css/tokens.css') }}">
+    @if(session('theme'))
+    <link rel="stylesheet" href="{{ url('css/themes/theme-' . session('theme') . '.css') }}">
+    @endif
     <link rel="stylesheet" href="{{ url('css/reset.css') }}">
     <link rel="stylesheet" href="{{ url('css/components.css') }}">
     <link rel="stylesheet" href="{{ url('css/layout-admin.css') }}">
@@ -32,6 +35,19 @@
                 <li><a href="{{ url('admin/college') }}" class="{{ request()->is('admin/college') ? 'active' : '' }}">📊 {{ $role === 'college' ? '本院数据' : '全校数据' }}</a></li>
             </ul>
             <ul class="sidebar-menu" style="margin-top:auto;border-top:1px solid var(--color-border);padding-top:12px;">
+                <li>
+                    <form method="POST" action="{{ route('admin.theme.switch') }}" style="display:flex;align-items:center;gap:6px;padding:4px 0;">
+                        @csrf
+                        <span>🎨</span>
+                        <select name="theme" onchange="this.form.submit()" style="flex:1;padding:4px 6px;font-size:12px;background:var(--color-sidebar);color:var(--color-sidebar-text);border:1px solid var(--color-sidebar-text);border-radius:4px;cursor:pointer;">
+                            @php $themes = ['classic-red'=>'经典红','dark-purple'=>'暗夜紫','deep-space'=>'深空蓝','fresh-green'=>'清新绿','pure-white'=>'纯净白','warm-campus'=>'暖校园']; @endphp
+                            <option value="">🏫 品牌默认</option>
+                            @foreach($themes as $key => $label)
+                                <option value="{{ $key }}" {{ session('theme') === $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </form>
+                </li>
                 <li><a href="{{ url('admin/profile') }}" class="{{ request()->is('admin/profile*') ? 'active' : '' }}">🔒 修改密码</a></li>
             </ul>
         </aside>

@@ -7,6 +7,9 @@
     <meta name="user-authenticated" content="{{ auth()->check() ? '1' : '0' }}">
     <title>@yield('title', config('school.platform_name') . ' — ' . config('school.short_name'))</title>
     <link rel="stylesheet" href="{{ url('css/tokens.css') }}">
+    @if(session('theme'))
+    <link rel="stylesheet" href="{{ url('css/themes/theme-' . session('theme') . '.css') }}">
+    @endif
     <link rel="stylesheet" href="{{ url('css/reset.css') }}">
     <link rel="stylesheet" href="{{ url('css/components.css') }}">
     <link rel="stylesheet" href="{{ url('css/layout-frontend.css') }}">
@@ -82,6 +85,44 @@
         t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,.15);animation:toastIn .3s ease;white-space:nowrap;';
         document.body.appendChild(t);
         setTimeout(function(){ t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(function(){ t.remove(); }, 300); }, 1500);
+    }
+
+    function renderPagination(containerId, currentPage, lastPage, searchFn) {
+        var pg = document.getElementById(containerId);
+        if (!pg || lastPage <= 1) { pg && (pg.innerHTML = ''); return; }
+
+        var html = '<div class="pagination">';
+
+        // Sliding window: 3 pages centered on currentPage
+        var start = Math.max(1, Math.min(currentPage - 1, lastPage - 2));
+        var end = Math.min(start + 2, lastPage);
+        if (end - start < 2) start = Math.max(1, end - 2);
+
+        if (currentPage > 1) {
+            html += '<button class="pagination-arrow" onclick="' + searchFn + '(' + (currentPage - 1) + ')" type="button">←</button>';
+        }
+
+        if (start > 1) {
+            html += '<span class="pagination-ellipsis">…</span>';
+        }
+
+        for (var i = start; i <= end; i++) {
+            html += '<button onclick="' + searchFn + '(' + i + ')" class="pagination-btn' + (i === currentPage ? ' active' : '') + '" type="button">' + i + '</button>';
+        }
+
+        if (end < lastPage) {
+            html += '<span class="pagination-ellipsis">…</span>';
+        }
+
+        if (currentPage < lastPage) {
+            html += '<button class="pagination-arrow" onclick="' + searchFn + '(' + (currentPage + 1) + ')" type="button">→</button>';
+        }
+
+        html += '<input type="text" class="pagination-jump" onkeydown="var p=parseInt(this.value);if(event.key===\'Enter\'&&p>=1&&p<=' + lastPage + '){' + searchFn + '(p)}" title="跳转到">';
+        html += '<span class="pagination-jump-label">/ ' + lastPage + ' 页</span>';
+
+        html += '</div>';
+        pg.innerHTML = html;
     }
     </script>
     <style>

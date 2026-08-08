@@ -89,15 +89,7 @@ async function loadResumes(page = 1) {
             }
         });
 
-        let pager = '';
-        if (meta.last_page > 1) {
-            pager += `<div class="flex gap-xs" style="justify-content:center;">`;
-            for (let i = 1; i <= meta.last_page; i++) {
-                pager += `<button onclick="loadResumes(${i})" class="btn btn-xs" style="padding:4px 12px;${i === currentPage ? 'background:var(--color-primary);color:#fff;' : ''}">${i}</button>`;
-            }
-            pager += `</div>`;
-        }
-        document.getElementById('pagination').innerHTML = pager;
+        renderPagination('pagination', currentPage, meta.last_page, 'loadResumes');
     } catch(e) {
         document.getElementById('resumeList').innerHTML = '<div class="card empty-state-card text-danger">加载失败</div>';
     }
