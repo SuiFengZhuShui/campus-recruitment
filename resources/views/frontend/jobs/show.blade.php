@@ -22,7 +22,7 @@ async function loadJob() {
                 <h1 class="text-3xl mb-xs">${j.title}</h1>
                 <div class="mb-lg">
                     <span class="tag tag-green">${j.enterprise?.name || ''}</span>
-                    <span class="tag tag-blue ml-sm">${j.industry || '-'}</span>
+                    <span class="tag tag-blue ml-sm">${j.enterprise.industry || '-'}</span>
                     <span class="tag tag-gray ml-sm">${j.city}</span>
                     <span class="tag tag-yellow ml-sm">${j.type === 'full-time' ? '全职' : '实习'}</span>
                 </div>
