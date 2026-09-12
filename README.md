@@ -70,12 +70,13 @@ php artisan serve
 
 | 角色 | 账号 | 密码 |
 |------|------|------|
-| 学校管理员 | `admin`（手机号 `13700000000`） | `CHANGE_ME` |
-| 学院管理员 | `jidian` / `qiche` / `dianxin` / `huanjing` / `caijing` / `maoyi` / `yishu` / `guojiao`（共 8 个） | `CHANGE_ME` |
-| 企业 | `enterprise1` 起 | `123456` |
-| 学生 | `student1` 起 | `123456` |
+| 学校管理员 | `admin`（手机号 `13700000000`） | 见 `.env` 的 `SEED_PASSWORD` |
+| 学院管理员 | `jidian` / `qiche` / `dianxin` / `huanjing` / `caijing` / `maoyi` / `yishu` / `guojiao`（共 8 个） | 见 `.env` 的 `SEED_PASSWORD` |
+| 企业 | `enterprise1` 起（共 24 个） | 见 `.env` 的 `SEED_PASSWORD` |
+| 学生 | `student1` 起（共 32 个） | 见 `.env` 的 `SEED_PASSWORD` |
 
-> **生产环境务必立即修改以上所有密码。** 学校与学院管理员密码定义在 `database/seeds/SchoolSeeder.php`，企业与学生演示账号定义在 `database/seeds/DatabaseSeeder.php`。
+> 演示账号密码**不硬编码在代码里**，seeder 通过 `DemoPassword::get()` 读取 `.env` 的 `SEED_PASSWORD`（`.env.example` 默认 `ChangeMe@2026`）。未配置该变量时 seeder 会直接报错，不会静默使用空密码。
+> **生产环境务必改成强密码**，并在 seed 之前就设好。
 
 ### 定时任务
 

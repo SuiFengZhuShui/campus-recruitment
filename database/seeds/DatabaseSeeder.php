@@ -70,15 +70,7 @@ class DatabaseSeeder extends Seeder
                 $industry = $sub === 0 ? $entIndustries[$idx] : $allIndustries[array_rand($allIndustries)];
                 $status = $idx < 6 ? $statuses[($idx * 3 + $sub) % count($statuses)] : 'approved';
 
-                $entUser = User::create([
-                    'role' => 'enterprise',
-                    'username' => 'enterprise' . $entId,
-                    'name' => $name . 'HR',
-                    'phone' => '139000000' . str_pad($entId, 2, '0', STR_PAD_LEFT),
-                    'email' => 'enterprise' . $entId . '@test.com',
-                    'password' => Hash::make('123456'),
-                    'status' => $status === 'approved' ? 'active' : 'active',
-                ]);
+                $entUser = User::create($this->enterpriseUserValues($name, $entId, $status));
 
                 Enterprise::create([
                     'user_id' => $entUser->id,
@@ -140,16 +132,7 @@ class DatabaseSeeder extends Seeder
             for ($sub = 0; $sub < 4; $sub++) {
                 $i = $idx * 4 + $sub + 1;
                 $year = ['2024', '2023', '2024', '2023'][$sub];
-                $stuUser = User::create([
-                    'role' => 'student',
-                    'username' => 'student' . $i,
-                    'name' => $stuNames[$idx][$sub],
-                    'phone' => '138000000' . str_pad($i, 2, '0', STR_PAD_LEFT),
-                    'email' => 'student' . $i . '@test.com',
-                    'password' => Hash::make('123456'),
-                    'college_id' => $college->id,
-                    'status' => 'active',
-                ]);
+                $stuUser = User::create($this->studentUserValues($stuNames[$idx][$sub], $i, $college->id));
 
                 Student::create([
                     'user_id' => $stuUser->id,
@@ -307,5 +290,41 @@ class DatabaseSeeder extends Seeder
         $totalInterviews = Interview::count();
         $totalOffers = Offer::count();
         $this->command->info("Seed complete: 1 school, {$colleges->count()} colleges, {$totalEnts} enterprises, {$totalStudents} students, {$totalJobs} jobs, {$totalApps} applications, {$totalInterviews} interviews, {$totalOffers} offers");
+    }
+
+    /**
+     * 企业 HR 账号的写入字段
+     *
+     * 从三重循环内联数组抽出，一是降低嵌套层级，二是让密码统一走
+     * DemoPassword 读取 .env，不在代码里硬编码。
+     */
+    private function enterpriseUserValues($name, $entId, $status)
+    {
+        return [
+            'role' => 'enterprise',
+            'username' => 'enterprise' . $entId,
+            'name' => $name . 'HR',
+            'phone' => '139000000' . str_pad($entId, 2, '0', STR_PAD_LEFT),
+            'email' => 'enterprise' . $entId . '@test.com',
+            'password' => Hash::make(DemoPassword::get()),
+            'status' => $status === 'approved' ? 'active' : 'active',
+        ];
+    }
+
+    /**
+     * 学生账号的写入字段
+     */
+    private function studentUserValues($name, $i, $collegeId)
+    {
+        return [
+            'role' => 'student',
+            'username' => 'student' . $i,
+            'name' => $name,
+            'phone' => '138000000' . str_pad($i, 2, '0', STR_PAD_LEFT),
+            'email' => 'student' . $i . '@test.com',
+            'password' => Hash::make(DemoPassword::get()),
+            'college_id' => $collegeId,
+            'status' => 'active',
+        ];
     }
 }
