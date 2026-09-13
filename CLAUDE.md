@@ -108,3 +108,17 @@ C:\Users\Administrator\Desktop\yyy\
 | JS 常量 | UPPER_SNAKE_CASE | `API_BASE_URL` |
 | CSS 类 | kebab-case | `.job-card` |
 | 数据库表/字段 | snake_case | `job_listings` |
+
+## Agent skills
+
+### Issue tracker
+
+Issues 和 specs 存放在 GitHub Issues，走 `gh` CLI。See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+五个 canonical triage roles，label 字符串与 role 名相同。See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context：repo 根目录 `CONTEXT.md` + `docs/adr/`。See `docs/agents/domain.md`.
