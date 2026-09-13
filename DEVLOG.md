@@ -74,4 +74,4 @@
 ### 遇到的问题
 - Laravel 5.8 没有 `php artisan schedule:work`（该命令 Laravel 8 才引入）→ README 改为 `schedule:run`
 - 企业资质文档存于 `local` 盘、由控制器读取后输出，无需 `storage:link` → README 已更正
-- 管理员密码原先硬编码在 `SchoolSeeder.php`（公开仓库里的可用凭据，原值见 git 历史）→ 已外置
+- 管理员密码原先硬编码在 `SchoolSeeder.php` → 已外置到 `.env` 的 `SEED_PASSWORD`
