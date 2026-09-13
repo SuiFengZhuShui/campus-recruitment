@@ -28,3 +28,7 @@ _screenshot*
 .superpowers/
 .gstack/
 .codegraph/
+
+# Claude Code 本地工作区（settings/cache 忽略，项目记忆保留）
+.claude/*
+!.claude/memory/
