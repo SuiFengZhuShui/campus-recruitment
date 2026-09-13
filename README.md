@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="public/images/school-logo.svg" width="120" height="120" style="border-radius: 20px;" alt="校园招聘平台">
-</p>
-
 <h1 align="center">校园招聘平台</h1>
 
 <p align="center">连接学校、学院、企业与学生的校园招聘系统 · 全流程线上完成</p>
